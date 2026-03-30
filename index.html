@@ -296,6 +296,25 @@ body{font-family:var(--app-font);background:var(--bg0);color:var(--text);height:
 /* Cloudinary badge */
 .cld-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25);border-radius:7px;padding:4px 10px;font-size:11px;color:var(--ok);font-family:monospace;margin-bottom:8px;}
 
+/* Font chips */
+.fchip{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;background:var(--bg2);border:2px solid var(--border);border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;color:var(--t2);min-width:80px;}
+.fchip:hover{border-color:var(--accent);color:var(--text);background:var(--as);}
+.fchip.on{border-color:var(--accent);background:var(--as);color:var(--text);box-shadow:0 0 0 1px var(--accent);}
+
+/* Color mode cards */
+.mode-card{display:flex;align-items:center;gap:11px;padding:10px 13px;background:var(--bg2);border:2px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;margin-bottom:6px;}
+.mode-card:hover{border-color:var(--accent);background:var(--as);}
+.mode-card.active{border-color:var(--accent);background:var(--as);}
+
+/* Profile banner (settings) */
+.prof-banner-prev{width:100%;height:80px;border-radius:10px;background:var(--accent);background-size:cover;background-position:center;border:2px solid var(--border);position:relative;overflow:hidden;cursor:pointer;transition:opacity .2s;display:flex;align-items:center;justify-content:center;}
+.prof-banner-prev:hover{opacity:.85;}
+.prof-banner-prev .banner-hint{font-size:11px;color:rgba(255,255,255,.7);font-weight:600;background:rgba(0,0,0,.35);padding:4px 10px;border-radius:20px;}
+
+/* Member list badges */
+.bdg-owner{background:linear-gradient(135deg,#fbbf24,#d97706);color:#1a1a1a;font-size:10px;font-weight:800;padding:2px 7px;border-radius:20px;white-space:nowrap;display:inline-flex;align-items:center;gap:3px;}
+.bdg-role{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;white-space:nowrap;display:inline-flex;align-items:center;}
+
 /* Modals */
 .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.76);backdrop-filter:blur(6px);z-index:250;align-items:center;justify-content:center;}
 .ov.open{display:flex;}
@@ -329,7 +348,7 @@ body{font-family:var(--app-font);background:var(--bg0);color:var(--text);height:
 #fbWarn{display:none;position:fixed;top:12px;left:50%;transform:translateX(-50%);background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.4);border-radius:9px;padding:9px 16px;font-size:12px;color:var(--warn);z-index:9998;text-align:center;max-width:420px;}
 #fbWarn.show{display:block;}
 
-#fileInput,#avatarInput{display:none;}
+#fileInput,#avatarInput,#bannerInput{display:none;}
 .hidden{display:none!important;}
 option{background:var(--bg2);}
 
@@ -464,6 +483,7 @@ option{background:var(--bg2);}
 
 <!-- Hidden inputs -->
 <input type="file" id="avatarInput" accept="image/*,.gif" onchange="onAvatarFile(this.files)" style="display:none;">
+<input type="file" id="bannerInput" accept="image/*,.gif" onchange="onBannerFile(this.files)" style="display:none;">
 
 <!-- Settings -->
 <div class="sov" id="settingsOv" onclick="closeSovClick(event)">
@@ -1177,6 +1197,14 @@ function showPCard(e,userOrJson){
   const pcAv=document.getElementById('pcAv');
   pcAv.className=`pcard-av ${user.avColor||'av-a'}`;
   pcAv.innerHTML=user.photo?`<img src="${user.photo}">`:`${ini(user.name)}`;
+  // Apply banner — if viewing own card, use live myProfile data
+  const bannerSrc=(user.uid===ME?.uid&&myProfile)?myProfile:user;
+  const banner=document.getElementById('pcBanner');
+  if(banner){
+    if(bannerSrc.bannerImg)banner.style.background=`url(${bannerSrc.bannerImg}) center/cover no-repeat`;
+    else if(bannerSrc.bannerColor)banner.style.background=bannerSrc.bannerColor;
+    else banner.style.background='var(--accent)';
+  }
   document.getElementById('pcName').textContent=user.name||'';
   document.getElementById('pcHandle').textContent=user.uid?formatUID(user.uid):'';
   document.getElementById('pcIdTag').innerHTML=user.uid?`<span class="user-id-tag" onclick="navigator.clipboard.writeText('${user.uid}')">${t('id')}: ${user.uid}</span>`:'';
@@ -1276,8 +1304,23 @@ async function saveStatus(){
 
 async function pgPerfil(c){
   const isEn=appLang==='en';const photo=myProfile?.photoURL||ME?.photoURL;
+  const bannerImg=myProfile?.bannerImg||null;
+  const bannerColor=myProfile?.bannerColor||'var(--accent)';
   c.innerHTML=`<div class="s-ttl">🪪 ${t('profile')}</div>
     <div class="s-sub">${isEn?'What others see about you.':'Lo que los demás ven de ti.'}</div>
+    <div class="s-sec">
+      <div class="s-sec-lbl">${isEn?'Profile banner (GIF supported)':'Banner de perfil (admite GIFs)'}</div>
+      <div class="prof-banner-prev" id="profBannerPrev" style="background:${bannerImg?`url(${bannerImg}) center/cover no-repeat`:bannerColor};" onclick="document.getElementById('bannerInput').click()">
+        ${!bannerImg?`<span class="banner-hint">🖼 ${isEn?'Click to upload banner':'Clic para subir banner'}</span>`:''}
+      </div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:8px;">
+        <button class="s-btn secondary" onclick="document.getElementById('bannerInput').click()">🖼 ${isEn?'Upload / GIF':'Subir / GIF'} (Cloudinary)</button>
+        ${bannerImg?`<button class="s-btn danger" style="padding:8px 12px;" onclick="removeProfileBanner()">✕ ${isEn?'Remove':'Quitar'}</button>`:''}
+      </div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;" id="bannerColorPicker">
+        ${['#5e6ad2','#e879f9','#ef4444','#f97316','#eab308','#22c55e','#06b6d4','#8b5cf6','#ec4899','#0f172a'].map(col=>`<div onclick="setProfileBannerColor('${col}')" style="width:22px;height:22px;border-radius:50%;background:${col};cursor:pointer;border:2px solid ${(myProfile?.bannerColor===col&&!bannerImg)?'var(--text)':'transparent'};transition:all .2s;" title="${col}"></div>`).join('')}
+      </div>
+    </div>
     <div class="s-sec">
       <div class="s-sec-lbl">${isEn?'Profile photo (GIF supported)':'Foto de perfil (admite GIFs)'}</div>
       <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
@@ -1302,6 +1345,30 @@ async function saveProfile(){
   await updateDoc(doc(db,'users',ME.uid),{name,bio});
   myProfile={...myProfile,name,bio};updateMyAvatar();
   toast('✅',appLang==='en'?'Profile updated':'Perfil actualizado','');
+}
+async function setProfileBannerColor(col){
+  myProfile={...myProfile,bannerColor:col,bannerImg:null};
+  const {db,doc,updateDoc}=FB;
+  await updateDoc(doc(db,'users',ME.uid),{bannerColor:col,bannerImg:null}).catch(()=>{});
+  showPage('perfil');
+}
+async function removeProfileBanner(){
+  myProfile={...myProfile,bannerImg:null};
+  const {db,doc,updateDoc}=FB;
+  await updateDoc(doc(db,'users',ME.uid),{bannerImg:null}).catch(()=>{});
+  toast('🗑',appLang==='en'?'Banner removed':'Banner eliminado','');showPage('perfil');
+}
+async function onBannerFile(files){
+  const f=files[0];if(!f)return;
+  try{
+    const url=await uploadWithProgress(f);
+    const {db,doc,updateDoc}=FB;
+    await updateDoc(doc(db,'users',ME.uid),{bannerImg:url});
+    myProfile={...myProfile,bannerImg:url};
+    toast('🖼',appLang==='en'?'Banner updated':'Banner actualizado','Cloudinary ✓');
+    showPage('perfil');
+  }catch(e){toast('❌','Error al subir banner',e.message);}
+  document.getElementById('bannerInput').value='';
 }
 
 function pgJuegos(c){
@@ -1564,12 +1631,29 @@ async function pgMiembros(c){
   const {db,doc,getDoc}=FB;const roles=srv.roles||[];
   const members=[];
   for(const uid of srv.members||[]){const snap=await getDoc(doc(db,'users',uid));if(snap.exists())members.push({uid,...snap.data()});}
-  c.innerHTML=`<div class="s-ttl">${t('members')} — ${esc(srv.name)}</div>
-    ${members.map(m=>`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:11px 13px;display:flex;align-items:center;gap:10px;margin-bottom:7px;flex-wrap:wrap;">
+  const owner=members.find(m=>m.uid===srv.ownerId);
+  const rest=members.filter(m=>m.uid!==srv.ownerId);
+  function renderMember(m){
+    const isOwner=m.uid===srv.ownerId;
+    const memberRoles=roles.filter(r=>m.roles?.includes(r.id)||[]);
+    const roleBadges=memberRoles.map(r=>`<span class="bdg-role" style="background:${r.color}22;color:${r.color};border:1px solid ${r.color}55;">${r.name}</span>`).join('');
+    return `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:11px 13px;display:flex;align-items:center;gap:10px;margin-bottom:7px;flex-wrap:wrap;">
       <div class="mav ${m.avColor||'av-a'}" style="width:36px;height:36px;font-size:12px;flex-shrink:0;overflow:hidden;border-radius:50%;display:flex;align-items:center;justify-content:center;">${m.photoURL?`<img src="${m.photoURL}" style="width:100%;height:100%;object-fit:cover;">`:`${ini(m.name)}`}</div>
-      <div style="flex:1;min-width:80px;"><div style="font-size:13px;font-weight:700;">${esc(m.name)}</div><div style="font-size:10px;color:var(--t3);">${m.email||''}</div></div>
+      <div style="flex:1;min-width:80px;">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <span style="font-size:13px;font-weight:700;">${esc(m.name)}</span>
+          ${isOwner?`<span class="bdg-owner">👑 ${isEn?'Owner':'Creador'}</span>`:''}
+          ${roleBadges}
+        </div>
+        <div style="font-size:10px;color:var(--t3);margin-top:1px;">${m.email||''}</div>
+      </div>
       ${srv.ownerId===ME.uid&&m.uid!==ME.uid?`<button class="s-btn danger" style="padding:5px 9px;font-size:11px;" onclick="kickMember('${srv.id}','${m.uid}')">${isEn?'Kick':'Expulsar'}</button>`:''}
-    </div>`).join('')}`;
+    </div>`;
+  }
+  c.innerHTML=`<div class="s-ttl">${t('members')} — ${esc(srv.name)}</div>
+    <div class="s-sub" style="margin-bottom:14px;">${members.length} ${isEn?'member(s)':'miembro(s)'}</div>
+    ${owner?`<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t3);margin-bottom:7px;">👑 ${isEn?'Owner':'Creador'}</div>${renderMember(owner)}`:''}
+    ${rest.length?`<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t3);margin:14px 0 7px;">👥 ${isEn?'Members':'Miembros'} (${rest.length})</div>${rest.map(renderMember).join('')}`:''}`;
 }
 async function kickMember(srvId,memberUid){
   const {db,doc,updateDoc,arrayRemove}=FB;
