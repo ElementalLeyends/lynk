@@ -748,7 +748,23 @@ async function uploadWithProgress(file){
 }
 
 // ── BOOT ──
+let _appBooted = false;
+
+// Safety timeout: si firebase-ready nunca llega en 8s, mostrar login
+const _bootTimeout = setTimeout(() => {
+  if (_appBooted) return;
+  _appBooted = true;
+  console.warn('[Lynk] firebase-ready no llegó a tiempo, mostrando login');
+  setLoadTxt('⚠ No se pudo conectar');
+  document.getElementById('fbWarn').classList.add('show');
+  setTimeout(() => { hideLoad(); showLogin(); }, 1200);
+}, 8000);
+
 window.addEventListener('firebase-ready', () => {
+  if (_appBooted) return;
+  _appBooted = true;
+  clearTimeout(_bootTimeout);
+
   FB = window._fb;
 
   if(!isFirebaseConfigured()){
@@ -760,11 +776,25 @@ window.addEventListener('firebase-ready', () => {
   }
 
   setLoadTxt('Verificando sesión...');
+
+  // Timeout adicional por si onAuthStateChanged nunca responde
+  const _authTimeout = setTimeout(() => {
+    console.warn('[Lynk] onAuthStateChanged no respondió, mostrando login');
+    hideLoad();
+    showLogin();
+  }, 10000);
+
   FB.onAuthStateChanged(FB.auth, async user => {
+    clearTimeout(_authTimeout);
     if(user){
       ME = user;
       setLoadTxt('Cargando perfil...');
-      await loadMyProfile();
+      try {
+        await loadMyProfile();
+      } catch(e) {
+        console.error('[Lynk] Error cargando perfil:', e);
+        toast('⚠','Error al cargar perfil', e.message);
+      }
       setLoadTxt('Iniciando...');
       hideLoad();
       showApp();
