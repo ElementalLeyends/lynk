@@ -12,7 +12,7 @@
   import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, updateProfile }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, collection, doc, addDoc, setDoc, getDoc, getDocs,
-    onSnapshot, query, orderBy, serverTimestamp, deleteDoc, updateDoc, where, limit }
+    onSnapshot, query, orderBy, serverTimestamp, deleteDoc, updateDoc, where, limit, arrayUnion, arrayRemove }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   // ╔══════════════════════════════════════════════════════════════════╗
@@ -37,7 +37,8 @@
   window._fb = { auth, db, provider, signInWithPopup, signOut,
     onAuthStateChanged, updateProfile, GoogleAuthProvider,
     collection, doc, addDoc, setDoc, getDoc, getDocs, onSnapshot,
-    query, orderBy, serverTimestamp, deleteDoc, updateDoc, where, limit };
+    query, orderBy, serverTimestamp, deleteDoc, updateDoc, where, limit,
+    arrayUnion, arrayRemove };
 
   window.dispatchEvent(new Event('firebase-ready'));
 </script>
@@ -276,6 +277,25 @@ body{font-family:var(--app-font);background:var(--bg0);color:var(--text);height:
 .pcard-btn:hover{opacity:.84;}
 /* Owner badge */
 .bdg-platform-owner{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1a1a;font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;white-space:nowrap;display:inline-flex;align-items:center;gap:3px;box-shadow:0 2px 8px rgba(245,158,11,.35);}
+/* Legend Mod badge */
+.bdg-legend-mod{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;white-space:nowrap;display:inline-flex;align-items:center;gap:3px;box-shadow:0 2px 8px rgba(168,85,247,.35);}
+/* Friend badge */
+.bdg-friend{background:linear-gradient(135deg,#38bdf8,#0284c7);color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;white-space:nowrap;display:inline-flex;align-items:center;gap:3px;box-shadow:0 2px 8px rgba(56,189,248,.3);}
+/* Emblem styles in profile card */
+.emblem-founder .pcard-emblem-inner{background:linear-gradient(135deg,rgba(251,191,36,.18),rgba(245,158,11,.1));border-color:rgba(251,191,36,.4);}
+.emblem-legend .pcard-emblem-inner{background:linear-gradient(135deg,rgba(168,85,247,.18),rgba(124,58,237,.1));border-color:rgba(168,85,247,.4);}
+.emblem-friend .pcard-emblem-inner{background:linear-gradient(135deg,rgba(56,189,248,.18),rgba(2,132,199,.1));border-color:rgba(56,189,248,.4);}
+.emblem-member .pcard-emblem-inner{background:rgba(94,106,210,.12);border-color:rgba(94,106,210,.3);}
+.emblem-gamer .pcard-emblem-inner{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);}
+.emblem-early .pcard-emblem-inner{background:linear-gradient(135deg,rgba(232,121,249,.15),rgba(94,106,210,.1));border-color:rgba(232,121,249,.35);}
+/* Emblem zone in settings */
+.emblem-zone{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;}
+.emblem-card{background:var(--bg2);border:2px solid var(--border);border-radius:12px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:default;transition:all .2s;position:relative;}
+.emblem-card.owned{border-color:var(--accent);background:var(--as);}
+.emblem-card-ico{font-size:28px;line-height:1;}
+.emblem-card-name{font-size:11px;font-weight:800;text-align:center;color:var(--text);}
+.emblem-card-desc{font-size:10px;color:var(--t3);text-align:center;line-height:1.4;}
+.emblem-owned-badge{position:absolute;top:6px;right:6px;width:16px;height:16px;background:var(--ok);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;}
 /* Admin panel modal */
 .admin-modal{background:var(--bg1);border:1px solid var(--border);border-radius:16px;width:620px;max-width:96vw;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;animation:mIn .2s ease;}
 .admin-hd{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
@@ -542,6 +562,18 @@ option{background:var(--bg2);}
   </div>
 </div>
 
+<!-- Manage User Modal (staff only) -->
+<div class="ov" id="manageUserMod">
+  <div class="modal" style="width:480px;">
+    <div class="mhd">
+      <div class="mtl">🛡 Gestionar <span id="muName">usuario</span></div>
+      <button class="mclz" onclick="closeModal('manageUserMod')">✕</button>
+    </div>
+    <div class="mbdy" id="muBody">
+    </div>
+  </div>
+</div>
+
 <!-- Hidden inputs -->
 <input type="file" id="avatarInput" accept="image/*,.gif" onchange="onAvatarFile(this.files)" style="display:none;">
 <input type="file" id="bannerInput" accept="image/*,.gif" onchange="onBannerFile(this.files)" style="display:none;">
@@ -730,7 +762,43 @@ const EMOJIS=['😊','😂','❤️','🔥','👍','🎉','✨','😎','🤔','�
 
 // ══ OWNER CONFIG ══
 const OWNER_UID = 'oGSXYwj3PvVs4Fm9Z4ZBan4PXuI3';
+// UIDs de multicuentas Legend Mod (se guardan en Firestore también, esto es fallback local)
+const LEGEND_MOD_UIDS_LOCAL = [];
+
 function isOwner(uid){ return uid === OWNER_UID; }
+async function isLegendMod(uid){
+  if(isOwner(uid))return true;
+  if(!FB)return false;
+  try{
+    const {db,doc,getDoc}=FB;
+    const snap=await getDoc(doc(db,'platform_roles',uid));
+    return snap.exists()&&snap.data().role==='legend_mod';
+  }catch(e){return false;}
+}
+async function isStaff(uid){ return await isLegendMod(uid); }
+// Cached version for sync checks (populated after login)
+let _staffCache={};
+async function refreshStaffCache(){
+  if(!FB)return;
+  try{
+    const {db,collection,getDocs}=FB;
+    const snap=await getDocs(collection(db,'platform_roles'));
+    _staffCache={};
+    snap.docs.forEach(d=>{_staffCache[d.id]=d.data().role;});
+    _staffCache[OWNER_UID]='owner';
+  }catch(e){}
+}
+function isStaffSync(uid){ return uid===OWNER_UID||_staffCache[uid]==='legend_mod'; }
+
+// ══ PLATFORM EMBLEMS ══
+const PLATFORM_EMBLEMS = [
+  { id:'founder',    label:'👑 Creador',        ico:'👑', css:'emblem-founder',    desc:'Fundador de Lynk' },
+  { id:'legend_mod', label:'⚔️ Legend Mod',      ico:'⚔️', css:'emblem-legend',     desc:'Moderador Legendario' },
+  { id:'friend',     label:'💙 Friend',           ico:'💙', css:'emblem-friend',     desc:'Amigo del equipo Lynk' },
+  { id:'member',     label:'🔗 Miembro',          ico:'🔗', css:'emblem-member',     desc:'Miembro de Lynk' },
+  { id:'gamer',      label:'🎮 Gamer',            ico:'🎮', css:'emblem-gamer',      desc:'Gamer activo' },
+  { id:'early',      label:'🌟 Early Adopter',    ico:'🌟', css:'emblem-early',      desc:'Uno de los primeros en Lynk' },
+];
 const FONTS=[
   {n:'Cabinet Grotesk',l:'Cabinet Grotesk (predeterminada)'},
   {n:'Georgia',l:'Georgia'},{n:'Trebuchet MS',l:'Trebuchet MS'},
@@ -927,6 +995,7 @@ function showApp(){
   buildEmojiPicker();updateMyAvatar();listenServers();
   listenDMList();
   initIdleDetection();
+  refreshStaffCache();
 }
 
 function updateMyAvatar(){
@@ -1408,14 +1477,20 @@ async function showPCard(e,userOrJson){
   const handleEl=document.getElementById('pcHandle');
   if(handleEl)handleEl.textContent=fullUser.uid?`ID#${fullUser.uid.slice(0,10)}...`:'';
 
-  // Badges
+  // Badges (top row under name)
   const badgesEl=document.getElementById('pcBadges');
   badgesEl.innerHTML='';
   if(isOwner(fullUser.uid)){
-    badgesEl.innerHTML+=`<span class="bdg-platform-owner">👑 Owner</span>`;
+    badgesEl.innerHTML+=`<span class="bdg-platform-owner">👑 Creador</span>`;
   }
-  // Member badge
-  badgesEl.innerHTML+=`<span class="bdg bdg-member">✦ Miembro</span>`;
+  const role=_staffCache[fullUser.uid];
+  if(role==='legend_mod'&&!isOwner(fullUser.uid)){
+    badgesEl.innerHTML+=`<span class="bdg-legend-mod">⚔️ Legend Mod</span>`;
+  }
+  const userEmblems=fullUser.emblems||[];
+  if(userEmblems.includes('friend')){
+    badgesEl.innerHTML+=`<span class="bdg-friend">💙 Friend</span>`;
+  }
 
   // Bio
   const bioSection=document.getElementById('pcBioSection');
@@ -1445,20 +1520,43 @@ async function showPCard(e,userOrJson){
     gamesSection.classList.add('hidden');
   }
 
-  // Emblems (platform owner gets a special crown emblem, others get member emblem)
+  // Emblems
   const emblemsSection=document.getElementById('pcEmblemsSection');
   const emblemsEl=document.getElementById('pcEmblems');
-  const emblems=[];
-  if(isOwner(fullUser.uid))emblems.push({ico:'👑',label:'Fundador de Lynk'});
-  emblems.push({ico:'🔗',label:'Miembro de Lynk'});
-  if(fullUser.createdAt){
-    const created=fullUser.createdAt.toDate?fullUser.createdAt.toDate():new Date(fullUser.createdAt);
-    const months=Math.floor((Date.now()-created.getTime())/(1000*60*60*24*30));
-    if(months>=1)emblems.push({ico:'🎖',label:`Miembro desde hace ${months} mes${months>1?'es':''}`});
-  }
-  if(fullUser.games?.length>=3)emblems.push({ico:'🎮',label:'Gamer'});
-  emblemsEl.innerHTML=emblems.map(em=>`<div class="pcard-emblem">${em.ico}<span class="pcard-emblem-tip">${esc(em.label)}</span></div>`).join('');
+  const userEmblemIds=fullUser.emblems||[];
+  // Build full emblem list for this user
+  const activeEmblems=[];
+  if(isOwner(fullUser.uid))activeEmblems.push('founder');
+  if(_staffCache[fullUser.uid]==='legend_mod')activeEmblems.push('legend_mod');
+  // Add emblems from Firestore array
+  userEmblemIds.forEach(eid=>{if(!activeEmblems.includes(eid))activeEmblems.push(eid);});
+  // Always has member
+  if(!activeEmblems.includes('member'))activeEmblems.push('member');
+  // Games badge
+  if((fullUser.games||[]).length>=3&&!activeEmblems.includes('gamer'))activeEmblems.push('gamer');
+
+  emblemsEl.innerHTML=activeEmblems.map(eid=>{
+    const def=PLATFORM_EMBLEMS.find(e=>e.id===eid)||{ico:'🏅',label:eid,css:'emblem-member',desc:''};
+    return `<div class="pcard-emblem ${def.css}">
+      <div class="pcard-emblem-inner" style="width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;border:1px solid var(--border);background:var(--bg2);">${def.ico}</div>
+      <span class="pcard-emblem-tip">${esc(def.desc||def.label)}</span>
+    </div>`;
+  }).join('');
   emblemsSection.classList.remove('hidden');
+
+  // Staff actions — if viewer is owner or legend_mod, show manage button
+  const canManage=isStaffSync(ME.uid);
+  const existingMgr=document.getElementById('pcManageBtn');
+  if(existingMgr)existingMgr.remove();
+  if(canManage&&fullUser.uid!==ME.uid){
+    const mgr=document.createElement('button');
+    mgr.id='pcManageBtn';
+    mgr.className='pcard-btn';
+    mgr.style.cssText='margin-top:5px;background:var(--bg3);border:1px solid var(--border);color:var(--text);';
+    mgr.textContent='🛡 Gestionar usuario';
+    mgr.onclick=()=>openManageUserModal(fullUser);
+    document.getElementById('pcBtn').after(mgr);
+  }
 
   // Button
   const btn=document.getElementById('pcBtn');
@@ -1516,14 +1614,17 @@ document.addEventListener('click',e=>{
 // ══ SETTINGS ══
 function buildSettingsNav(){
   const isEn=appLang==='en';
-  const ownerSection=isOwner(ME?.uid)?`
-    <div class="snav-sec">👑 Owner</div>
+  const staffSection=isStaffSync(ME?.uid)?`
+    <div class="snav-sec">🛡 Staff</div>
     <div class="snav-it" data-pg="admin-users" onclick="showPage('admin-users')"><span class="si">👥</span> Usuarios</div>
-    <div class="snav-it" data-pg="admin-bans" onclick="showPage('admin-bans')"><span class="si">🔨</span> Bans</div>`:'';
+    <div class="snav-it" data-pg="admin-bans" onclick="showPage('admin-bans')"><span class="si">🔨</span> Bans</div>
+    ${isOwner(ME?.uid)?`<div class="snav-it" data-pg="admin-emblemas" onclick="showPage('admin-emblemas')"><span class="si">🏅</span> Emblemas</div>`:''}`:''
+  ;
   document.getElementById('snav').innerHTML=`
     <div class="snav-sec">${isEn?'My Account':'Mi cuenta'}</div>
     <div class="snav-it" data-pg="mi-cuenta" onclick="showPage('mi-cuenta')"><span class="si">👤</span> ${t('account')}</div>
     <div class="snav-it" data-pg="perfil" onclick="showPage('perfil')"><span class="si">🪪</span> ${t('profile')}</div>
+    <div class="snav-it" data-pg="emblemas" onclick="showPage('emblemas')"><span class="si">🏅</span> Mis emblemas</div>
     <div class="snav-it" data-pg="juegos" onclick="showPage('juegos')"><span class="si">🎮</span> ${t('games')}</div>
     <div class="snav-it" data-pg="conexiones" onclick="showPage('conexiones')"><span class="si">🔗</span> ${t('connections')}</div>
     <div class="snav-it" data-pg="privacidad" onclick="showPage('privacidad')"><span class="si">🔒</span> ${t('privacy')}</div>
@@ -1535,7 +1636,7 @@ function buildSettingsNav(){
     <div class="snav-it" data-pg="srv-info" onclick="showPage('srv-info')"><span class="si">🖼</span> ${t('srvSettings')}</div>
     <div class="snav-it" data-pg="roles" onclick="showPage('roles')"><span class="si">🛡</span> ${t('roles')}</div>
     <div class="snav-it" data-pg="miembros-srv" onclick="showPage('miembros-srv')"><span class="si">👥</span> ${t('members')}</div>
-    ${ownerSection}
+    ${staffSection}
     <div class="snav-sec">${t('dangerSec')}</div>
     <div class="snav-it snav-danger" data-pg="salir" onclick="showPage('salir')"><span class="si">🚪</span> ${isEn?'Sign out':'Cerrar sesión'}</div>`;
 }
@@ -1545,7 +1646,7 @@ function closeSovClick(e){if(e.target===document.getElementById('settingsOv'))do
 function showPage(page){
   document.querySelectorAll('.snav-it').forEach(i=>i.classList.toggle('on',i.dataset.pg===page));
   const c=document.getElementById('scnt');c.innerHTML='';
-  const pages={'mi-cuenta':pgMiCuenta,perfil:pgPerfil,juegos:pgJuegos,conexiones:pgConexiones,privacidad:pgPrivacidad,apariencia:pgApariencia,idioma:pgIdioma,notificaciones:pgNotif,'srv-info':pgSrvInfo,roles:pgRoles,'miembros-srv':pgMiembros,salir:pgSalir,'admin-users':pgAdminUsers,'admin-bans':pgAdminBans};
+  const pages={'mi-cuenta':pgMiCuenta,perfil:pgPerfil,emblemas:pgEmblemas,juegos:pgJuegos,conexiones:pgConexiones,privacidad:pgPrivacidad,apariencia:pgApariencia,idioma:pgIdioma,notificaciones:pgNotif,'srv-info':pgSrvInfo,roles:pgRoles,'miembros-srv':pgMiembros,salir:pgSalir,'admin-users':pgAdminUsers,'admin-bans':pgAdminBans,'admin-emblemas':pgAdminEmblemas};
   if(pages[page])pages[page](c);
 }
 
@@ -1955,9 +2056,95 @@ async function kickMember(srvId,memberUid){
   toast('👢',appLang==='en'?'Member removed':'Miembro expulsado','');showPage('miembros-srv');
 }
 
-// ══ OWNER ADMIN PAGES ══
+// ══ MANAGE USER MODAL (owner + legend_mod) ══
+function openManageUserModal(user){
+  hideCard();
+  document.getElementById('muName').textContent=user.name||user.uid;
+  const userEmblems=user.emblems||[];
+  const isLM=_staffCache[user.uid]==='legend_mod';
+  const isOwnerUser=isOwner(user.uid);
+  const viewerIsOwner=isOwner(ME.uid);
+
+  const emblemsHtml=PLATFORM_EMBLEMS
+    .filter(e=>e.id!=='founder') // founder can't be assigned
+    .map(e=>{
+      const has=userEmblems.includes(e.id)||(e.id==='legend_mod'&&isLM);
+      return `<div style="display:flex;align-items:center;gap:9px;padding:7px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;margin-bottom:5px;">
+        <span style="font-size:20px;">${e.ico}</span>
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:700;">${esc(e.label)}</div>
+          <div style="font-size:10px;color:var(--t3);">${esc(e.desc)}</div>
+        </div>
+        <button class="s-btn ${has?'danger':'primary'}" style="padding:5px 12px;font-size:11px;" onclick="toggleEmblem('${user.uid}','${e.id}',${has},'${esc(user.name||user.uid)}')">
+          ${has?'Quitar':'Dar'}
+        </button>
+      </div>`;
+    }).join('');
+
+  document.getElementById('muBody').innerHTML=`
+    <div style="display:flex;align-items:center;gap:11px;padding:10px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin-bottom:14px;">
+      <div class="admin-user-av ${user.avColor||'av-a'}">${user.photoURL?`<img src="${esc(user.photoURL)}">`:`${ini(user.name)}`}</div>
+      <div>
+        <div style="font-size:13px;font-weight:800;">${esc(user.name||'?')}</div>
+        <div style="font-size:10px;color:var(--t3);">UID: ${user.uid}</div>
+      </div>
+    </div>
+    <div style="font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;">EMBLEMAS</div>
+    ${emblemsHtml}
+    ${viewerIsOwner&&!isOwnerUser?`
+    <div style="height:1px;background:var(--border);margin:14px 0;"></div>
+    <div style="font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;">ROL DE PLATAFORMA</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px;">
+      <button class="s-btn ${isLM?'danger':'primary'}" onclick="toggleLegendMod('${user.uid}',${isLM},'${esc(user.name||user.uid)}')">
+        ${isLM?'⚔️ Quitar Legend Mod':'⚔️ Dar Legend Mod'}
+      </button>
+    </div>
+    <div style="height:1px;background:var(--border);margin:14px 0;"></div>
+    <div style="font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--err);margin-bottom:8px;">ZONA DE PELIGRO</div>
+    <button class="s-btn danger" style="width:100%;" onclick="adminBanUser('${user.uid}','${esc(user.name||user.uid)}')">🔨 Banear usuario</button>`
+    :!isOwnerUser?`
+    <div style="height:1px;background:var(--border);margin:14px 0;"></div>
+    <div style="font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--err);margin-bottom:8px;">ZONA DE PELIGRO</div>
+    <button class="s-btn danger" style="width:100%;" onclick="adminBanUser('${user.uid}','${esc(user.name||user.uid)}')">🔨 Banear usuario</button>`
+    :''}`;
+  openModal('manageUserMod');
+}
+
+async function toggleEmblem(uid, emblemId, currently, name){
+  if(!isStaffSync(ME.uid))return;
+  try{
+    const {db,doc,updateDoc,arrayUnion,arrayRemove}=FB;
+    const userRef=doc(db,'users',uid);
+    if(currently){
+      await updateDoc(userRef,{emblems:arrayRemove(emblemId)});
+    } else {
+      await updateDoc(userRef,{emblems:arrayUnion(emblemId)});
+    }
+    toast(currently?'➖':'✨', currently?`Emblema quitado a ${name}`:`Emblema dado a ${name}`, emblemId);
+    closeModal('manageUserMod');
+  }catch(e){toast('❌','Error',e.message);}
+}
+
+async function toggleLegendMod(uid, currently, name){
+  if(!isOwner(ME.uid))return;
+  const {db,doc,setDoc,deleteDoc}=FB;
+  try{
+    if(currently){
+      await deleteDoc(doc(db,'platform_roles',uid));
+      delete _staffCache[uid];
+      toast('⚔️',`${name} ya no es Legend Mod`,'');
+    } else {
+      await setDoc(doc(db,'platform_roles',uid),{role:'legend_mod',uid,assignedBy:ME.uid,assignedAt:FB.serverTimestamp()});
+      _staffCache[uid]='legend_mod';
+      toast('⚔️',`${name} es ahora Legend Mod`,'');
+    }
+    closeModal('manageUserMod');
+  }catch(e){toast('❌','Error',e.message);}
+}
+
+// ══ OWNER ADMIN PAGES (accessible to owner + legend_mod) ══
 async function pgAdminUsers(c){
-  if(!isOwner(ME?.uid)){c.innerHTML='<div class="s-ttl">⛔ Sin acceso</div>';return;}
+  if(!isStaffSync(ME?.uid)){c.innerHTML='<div class="s-ttl">⛔ Sin acceso</div>';return;}
   c.innerHTML=`<div class="s-ttl">👥 Usuarios de Lynk</div>
     <div class="s-sub">Todos los usuarios registrados en la plataforma.</div>
     <input class="admin-search" id="adminSearch" placeholder="🔍 Buscar por nombre o UID..." oninput="filterAdminUsers(this.value)">
@@ -1966,11 +2153,11 @@ async function pgAdminUsers(c){
   try{
     const snap=await getDocs(collection(db,'users'));
     window._adminUsers=snap.docs.map(d=>({uid:d.id,...d.data()}));
-    renderAdminUsers(window._adminUsers,c);
+    renderAdminUsers(window._adminUsers);
   }catch(e){document.getElementById('adminUserList').innerHTML=`<div style="color:var(--err);">Error: ${e.message}</div>`;}
 }
 
-function renderAdminUsers(users,container){
+function renderAdminUsers(users){
   const list=document.getElementById('adminUserList');
   if(!list)return;
   if(!users.length){list.innerHTML='<div style="color:var(--t3);font-size:13px;padding:20px 0;">Sin resultados.</div>';return;}
@@ -1979,10 +2166,10 @@ function renderAdminUsers(users,container){
     <div class="admin-user-row">
       <div class="admin-user-av ${u.avColor||'av-a'}">${u.photoURL?`<img src="${esc(u.photoURL)}">`:`${ini(u.name)}`}</div>
       <div class="admin-user-info">
-        <div class="admin-user-name">${esc(u.name||'Sin nombre')} ${isOwner(u.uid)?'<span class="bdg-platform-owner" style="font-size:9px;">👑 Owner</span>':''}</div>
+        <div class="admin-user-name">${esc(u.name||'Sin nombre')}${isOwner(u.uid)?' <span class="bdg-platform-owner" style="font-size:9px;">👑 Creador</span>':_staffCache[u.uid]==='legend_mod'?' <span class="bdg-legend-mod" style="font-size:9px;">⚔️ Legend Mod</span>':''}</div>
         <div class="admin-user-meta">${statusEmoji[u.status||'offline']} ${esc(u.email||'')} · UID: ${u.uid?.slice(0,14)}...</div>
       </div>
-      ${u.uid!==ME.uid?`<button class="s-btn danger" style="padding:5px 10px;font-size:11px;" onclick="adminBanUser('${u.uid}','${esc(u.name||u.uid)}')">🔨 Ban</button>`:'<span style="font-size:11px;color:var(--t3);">(tú)</span>'}
+      ${u.uid!==ME.uid&&!isOwner(u.uid)?`<button class="s-btn secondary" style="padding:5px 10px;font-size:11px;flex-shrink:0;" onclick="openManageUserModal(${JSON.stringify(u).replace(/"/g,'&quot;')})">🛡 Gestionar</button>`:'<span style="font-size:11px;color:var(--t3);flex-shrink:0;">(tú)</span>'}
     </div>`).join('');
 }
 
@@ -1996,7 +2183,7 @@ function filterAdminUsers(query){
 }
 
 async function pgAdminBans(c){
-  if(!isOwner(ME?.uid)){c.innerHTML='<div class="s-ttl">⛔ Sin acceso</div>';return;}
+  if(!isStaffSync(ME?.uid)){c.innerHTML='<div class="s-ttl">⛔ Sin acceso</div>';return;}
   c.innerHTML=`<div class="s-ttl">🔨 Bans</div>
     <div class="s-sub">Usuarios baneados de la plataforma.</div>
     <div id="adminBanList"><div style="color:var(--t3);font-size:13px;">Cargando...</div></div>`;
@@ -2018,23 +2205,97 @@ async function pgAdminBans(c){
   }catch(e){document.getElementById('adminBanList').innerHTML=`<div style="color:var(--err);">Error: ${e.message}</div>`;}
 }
 
+// ══ EMBLEMS SETTINGS PAGE (visible to all users — shows own emblems) ══
+async function pgEmblemas(c){
+  // Reload own profile to get latest emblems
+  let profile=myProfile;
+  try{
+    const {db,doc,getDoc}=FB;
+    const snap=await getDoc(doc(db,'users',ME.uid));
+    if(snap.exists()){profile={...myProfile,...snap.data()};myProfile=profile;}
+  }catch(e){}
+  const owned=profile?.emblems||[];
+  const allEmblems=[...PLATFORM_EMBLEMS];
+  if(isOwner(ME.uid))allEmblems.unshift(); // founder already in list
+
+  c.innerHTML=`<div class="s-ttl">🏅 Mis Emblemas</div>
+    <div class="s-sub">Emblemas que has obtenido en Lynk. Aparecen en tu perfil público.</div>
+    <div class="emblem-zone">
+      ${allEmblems.map(e=>{
+        let has=owned.includes(e.id);
+        if(e.id==='founder'&&isOwner(ME.uid))has=true;
+        if(e.id==='legend_mod'&&_staffCache[ME.uid]==='legend_mod')has=true;
+        if(e.id==='member')has=true;
+        return `<div class="emblem-card${has?' owned':''}">
+          ${has?'<div class="emblem-owned-badge">✓</div>':''}
+          <div style="font-size:30px;">${e.ico}</div>
+          <div class="emblem-card-name">${esc(e.label)}</div>
+          <div class="emblem-card-desc">${esc(e.desc)}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
 async function adminBanUser(uid,name){
-  if(!isOwner(ME?.uid))return;
+  if(!isStaffSync(ME?.uid))return;
   const reason=prompt(`Razón para banear a ${name}:`)||'Sin razón';
+  if(reason===null)return;
   const {db,doc,setDoc,updateDoc,serverTimestamp}=FB;
   await setDoc(doc(db,'bans',uid),{uid,name,reason,bannedAt:serverTimestamp(),bannedBy:ME.uid});
   await updateDoc(doc(db,'users',uid),{banned:true,status:'offline'}).catch(()=>{});
   toast('🔨','Usuario baneado',name);
-  showPage('admin-users');
+  closeModal('manageUserMod');
 }
 
 async function adminUnbanUser(uid){
-  if(!isOwner(ME?.uid))return;
+  if(!isStaffSync(ME?.uid))return;
   const {db,doc,deleteDoc,updateDoc}=FB;
   await deleteDoc(doc(db,'bans',uid));
   await updateDoc(doc(db,'users',uid),{banned:false}).catch(()=>{});
   toast('✅','Usuario desbaneado','');
   showPage('admin-bans');
+}
+
+async function pgAdminEmblemas(c){
+  if(!isOwner(ME?.uid)){c.innerHTML='<div class="s-ttl">⛔ Sin acceso</div>';return;}
+  c.innerHTML=`<div class="s-ttl">🏅 Gestión de Emblemas</div>
+    <div class="s-sub">Usuarios con emblemas especiales asignados.</div>
+    <input class="admin-search" id="adminEmbSearch" placeholder="🔍 Buscar usuario..." oninput="filterEmblemUsers(this.value)">
+    <div id="emblemUserList"><div style="color:var(--t3);font-size:13px;">Cargando...</div></div>`;
+  const {db,collection,getDocs}=FB;
+  try{
+    const snap=await getDocs(collection(db,'users'));
+    window._emblemUsers=snap.docs.map(d=>({uid:d.id,...d.data()})).filter(u=>(u.emblems&&u.emblems.length)||isStaffSync(u.uid)||isOwner(u.uid));
+    renderEmblemUsers(window._emblemUsers);
+  }catch(e){document.getElementById('emblemUserList').innerHTML=`<div style="color:var(--err);">${e.message}</div>`;}
+}
+function renderEmblemUsers(users){
+  const list=document.getElementById('emblemUserList');if(!list)return;
+  if(!users.length){list.innerHTML='<div style="color:var(--t3);font-size:13px;padding:20px 0;">Sin usuarios con emblemas especiales.</div>';return;}
+  list.innerHTML=users.map(u=>{
+    const allEmblems=[];
+    if(isOwner(u.uid))allEmblems.push('founder');
+    if(_staffCache[u.uid]==='legend_mod')allEmblems.push('legend_mod');
+    (u.emblems||[]).forEach(e=>{if(!allEmblems.includes(e))allEmblems.push(e);});
+    if(!allEmblems.length)return '';
+    const emblemsHtml=allEmblems.map(eid=>{
+      const def=PLATFORM_EMBLEMS.find(e=>e.id===eid);
+      return def?`<span title="${esc(def.desc)}" style="font-size:16px;">${def.ico}</span>`:'';
+    }).join('');
+    return `<div class="admin-user-row">
+      <div class="admin-user-av ${u.avColor||'av-a'}">${u.photoURL?`<img src="${esc(u.photoURL)}">`:`${ini(u.name)}`}</div>
+      <div class="admin-user-info">
+        <div class="admin-user-name">${esc(u.name||'?')}</div>
+        <div style="display:flex;gap:4px;margin-top:3px;">${emblemsHtml}</div>
+      </div>
+      <button class="s-btn secondary" style="padding:5px 10px;font-size:11px;flex-shrink:0;" onclick="openManageUserModal(${JSON.stringify(u).replace(/"/g,'&quot;')})">🛡 Editar</button>
+    </div>`;
+  }).join('');
+}
+function filterEmblemUsers(q){
+  if(!window._emblemUsers)return;
+  const filt=!q.trim()?window._emblemUsers:window._emblemUsers.filter(u=>(u.name||'').toLowerCase().includes(q.toLowerCase())||(u.uid||'').toLowerCase().includes(q.toLowerCase()));
+  renderEmblemUsers(filt);
 }
 
 function pgSalir(c){
