@@ -12,8 +12,7 @@
   import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, updateProfile }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, collection, doc, addDoc, setDoc, getDoc, getDocs,
-    onSnapshot, query, orderBy, serverTimestamp, deleteDoc, updateDoc, where, limit,
-    arrayUnion, arrayRemove }
+    onSnapshot, query, orderBy, serverTimestamp, deleteDoc, updateDoc, where, limit }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   // ╔══════════════════════════════════════════════════════════════════╗
@@ -38,8 +37,7 @@
   window._fb = { auth, db, provider, signInWithPopup, signOut,
     onAuthStateChanged, updateProfile, GoogleAuthProvider,
     collection, doc, addDoc, setDoc, getDoc, getDocs, onSnapshot,
-    query, orderBy, serverTimestamp, deleteDoc, updateDoc, where, limit,
-    arrayUnion, arrayRemove };
+    query, orderBy, serverTimestamp, deleteDoc, updateDoc, where, limit };
 
   window.dispatchEvent(new Event('firebase-ready'));
 </script>
@@ -331,59 +329,7 @@ body{font-family:var(--app-font);background:var(--bg0);color:var(--text);height:
 #fbWarn{display:none;position:fixed;top:12px;left:50%;transform:translateX(-50%);background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.4);border-radius:9px;padding:9px 16px;font-size:12px;color:var(--warn);z-index:9998;text-align:center;max-width:420px;}
 #fbWarn.show{display:block;}
 
-/* LIGHT MODE */
-body.light-mode{
-  --bg0:#f0f0f8;--bg1:#e8e8f5;--bg2:#ddddf0;--bg3:#d0d0e5;--bg4:#c4c4da;
-  --border:#c0c0d8;--text:#18181f;--t2:#45455a;--t3:#8888a8;
-}
-/* HIGH CONTRAST */
-body.high-contrast{
-  --bg0:#000000;--bg1:#0a0a0a;--bg2:#141414;--bg3:#1e1e1e;--bg4:#282828;
-  --border:#444;--text:#ffffff;--t2:#cccccc;--t3:#888888;
-  --accent:#7b8fff;
-}
-.s-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(42,42,56,.5);}
-.s-row:last-child{border-bottom:none;}
-.s-row-ico{font-size:20px;flex-shrink:0;}
-.s-row-inf{flex:1;}
-.s-row-title{font-size:13px;font-weight:600;}
-.s-row-desc{font-size:11px;color:var(--t2);margin-top:1px;}
-.s-row-act{flex-shrink:0;}
-#bgInput{display:none;}
-/* ── REACTIONS ── */
-.mrcts{display:flex;gap:3px;flex-wrap:wrap;margin-top:4px;}
-.rct{display:inline-flex;align-items:center;gap:3px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:3px 8px;font-size:12px;cursor:pointer;transition:all .15s;user-select:none;}
-.rct:hover{background:var(--as);border-color:var(--accent);}
-.rct.mine{background:var(--as);border-color:var(--ab);}
-.rct-n{font-size:10px;font-weight:700;color:var(--t2);}
-.rct-add{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:var(--bg2);border:1px dashed var(--border);border-radius:20px;font-size:13px;cursor:pointer;transition:all .15s;opacity:0;}
-.mrow:hover .rct-add{opacity:1;}
-.rct-add:hover{background:var(--as);border-color:var(--accent);}
-/* ── EDIT MODE ── */
-.mbub.editing{background:var(--bg3)!important;border-color:var(--accent)!important;outline:none;white-space:pre-wrap;cursor:text;}
-.edit-hint{font-size:10px;color:var(--t3);margin-top:3px;display:none;}
-.mrow:has(.mbub.editing) .edit-hint{display:block;}
-/* ── ROLE BADGE ── */
-.role-badge{display:inline-block;font-size:9px;font-weight:800;padding:1px 6px;border-radius:20px;margin-left:4px;vertical-align:middle;}
-/* ── MEMBER SEARCH (owner) ── */
-#mpSearch input::placeholder{color:var(--t3);}
-/* ── SEARCH RESULT ── */
-.sr-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:9px;cursor:pointer;transition:background .15s;margin-bottom:2px;}
-.sr-item:hover{background:var(--bg2);}
-.sr-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;overflow:hidden;}
-.sr-av img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
-.sr-body{flex:1;}
-.sr-meta{display:flex;align-items:center;gap:6px;margin-bottom:3px;}
-.sr-author{font-size:12px;font-weight:700;}
-.sr-ts{font-size:10px;color:var(--t3);font-family:monospace;}
-.sr-text{font-size:12px;color:var(--t2);line-height:1.4;}
-.sr-text mark{background:var(--as);color:var(--accent);border-radius:3px;padding:0 2px;}
-.sr-empty{text-align:center;color:var(--t3);font-size:13px;padding:30px 20px;}
-/* ── ROLES SETTINGS ── */
-.role-row{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:10px 13px;margin-bottom:7px;}
-.role-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;}
-.perm-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px;}
-.perm-item{display:flex;align-items:center;justify-content:space-between;padding:6px 9px;background:var(--bg2);border-radius:7px;font-size:11px;}
+#fileInput,#avatarInput{display:none;}
 .hidden{display:none!important;}
 option{background:var(--bg2);}
 
@@ -466,8 +412,7 @@ option{background:var(--bg2);}
     <span class="tb-ico" id="tbIco">#</span>
     <span class="tb-nm" id="tbNm"></span>
     <span class="tb-topic" id="tbTopic"></span>
-    <button class="tb-btn" onclick="openMsgSearch()" title="Buscar mensajes">🔍</button>
-    <button class="tb-btn" onclick="toggleMembers()" title="Miembros">👥</button>
+    <button class="tb-btn" onclick="toggleMembers()">👥</button>
   </div>
   <div class="empty" id="emptyState">
     <div class="empty-e">🔗</div>
@@ -497,34 +442,9 @@ option{background:var(--bg2);}
 </main>
 
 <aside class="mpanel hidden" id="mpanel">
-  <div class="mp-hd" style="display:flex;align-items:center;justify-content:space-between;">
-    <span>Miembros</span>
-    <span id="mpMemberCount" style="font-size:10px;color:var(--t3);font-family:monospace;"></span>
-  </div>
-  <div id="mpSearch" style="display:none;padding:6px 8px;border-bottom:1px solid var(--border);">
-    <input id="mpSearchInput" type="text" placeholder="Nombre o UID..."
-      oninput="filterMembers(this.value)"
-      style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:5px 10px;color:var(--text);font-family:var(--app-font);font-size:11px;outline:none;transition:border-color .2s;"
-      onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
-  </div>
+  <div class="mp-hd">Miembros</div>
   <div class="mpl" id="mpl"></div>
 </aside>
-
-<!-- Message search overlay -->
-<div id="msgSearchOverlay" style="display:none;position:fixed;top:52px;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:100;padding:20px;">
-  <div style="max-width:600px;margin:0 auto;">
-    <div style="background:var(--bg1);border:1px solid var(--border);border-radius:13px;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,.5);">
-      <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);">
-        <span style="font-size:16px;">🔍</span>
-        <input id="msgSearchInput" type="text" placeholder="Buscar en este canal..."
-          oninput="searchMessages(this.value)"
-          style="flex:1;background:none;border:none;outline:none;color:var(--text);font-family:var(--app-font);font-size:14px;">
-        <button onclick="closeMsgSearch()" style="background:none;border:none;color:var(--t3);font-size:18px;cursor:pointer;padding:2px 6px;border-radius:5px;">✕</button>
-      </div>
-      <div id="msgSearchResults" style="max-height:400px;overflow-y:auto;padding:8px;"></div>
-    </div>
-  </div>
-</div>
 
 <!-- Profile card -->
 <div class="pcard hidden" id="profileCard">
@@ -544,7 +464,6 @@ option{background:var(--bg2);}
 
 <!-- Hidden inputs -->
 <input type="file" id="avatarInput" accept="image/*,.gif" onchange="onAvatarFile(this.files)" style="display:none;">
-<input type="file" id="bgInput" accept="image/*,.gif" style="display:none;">
 
 <!-- Settings -->
 <div class="sov" id="settingsOv" onclick="closeSovClick(event)">
@@ -748,23 +667,7 @@ async function uploadWithProgress(file){
 }
 
 // ── BOOT ──
-let _appBooted = false;
-
-// Safety timeout: si firebase-ready nunca llega en 8s, mostrar login
-const _bootTimeout = setTimeout(() => {
-  if (_appBooted) return;
-  _appBooted = true;
-  console.warn('[Lynk] firebase-ready no llegó a tiempo, mostrando login');
-  setLoadTxt('⚠ No se pudo conectar');
-  document.getElementById('fbWarn').classList.add('show');
-  setTimeout(() => { hideLoad(); showLogin(); }, 1200);
-}, 8000);
-
 window.addEventListener('firebase-ready', () => {
-  if (_appBooted) return;
-  _appBooted = true;
-  clearTimeout(_bootTimeout);
-
   FB = window._fb;
 
   if(!isFirebaseConfigured()){
@@ -776,25 +679,11 @@ window.addEventListener('firebase-ready', () => {
   }
 
   setLoadTxt('Verificando sesión...');
-
-  // Timeout adicional por si onAuthStateChanged nunca responde
-  const _authTimeout = setTimeout(() => {
-    console.warn('[Lynk] onAuthStateChanged no respondió, mostrando login');
-    hideLoad();
-    showLogin();
-  }, 10000);
-
   FB.onAuthStateChanged(FB.auth, async user => {
-    clearTimeout(_authTimeout);
     if(user){
       ME = user;
       setLoadTxt('Cargando perfil...');
-      try {
-        await loadMyProfile();
-      } catch(e) {
-        console.error('[Lynk] Error cargando perfil:', e);
-        toast('⚠','Error al cargar perfil', e.message);
-      }
+      await loadMyProfile();
       setLoadTxt('Iniciando...');
       hideLoad();
       showApp();
@@ -1042,14 +931,6 @@ function listenMessages(ch){
         w.appendChild(buildMsgEl(msg));
         w.scrollTop=w.scrollHeight;
       }
-      if(change.type==='modified'){
-        const msg={id:change.doc.id,...change.doc.data()};
-        const existing=document.getElementById('msg-'+msg.id);
-        if(existing){
-          const fresh=buildMsgEl(msg);
-          existing.replaceWith(fresh);
-        }
-      }
       if(change.type==='removed'){
         document.getElementById('msg-'+change.doc.id)?.remove();
       }
@@ -1075,14 +956,6 @@ function listenDMMessages(dmId){
         w.appendChild(buildMsgEl(msg));
         w.scrollTop=w.scrollHeight;
       }
-      if(change.type==='modified'){
-        const msg={id:change.doc.id,...change.doc.data()};
-        const existing=document.getElementById('msg-'+msg.id);
-        if(existing){
-          const fresh=buildMsgEl(msg);
-          existing.replaceWith(fresh);
-        }
-      }
       if(change.type==='removed'){
         document.getElementById('msg-'+change.doc.id)?.remove();
       }
@@ -1096,36 +969,13 @@ function buildMsgEl(msg){
   const row=document.createElement('div');
   row.className=`mrow${mine?' mine':''}`;
   row.id='msg-'+msg.id;
-  row.dataset.msgId=msg.id;
 
   const avHtml=msg.authorPhoto?`<img src="${msg.authorPhoto}">`:`<span>${ini(msg.authorName||'?')}</span>`;
   const avColor=msg.authorAvColor||'av-a';
-  const srv=activeServer||serversCache[activeSrvId];
-  const isOwner=srv&&srv.ownerId===ME.uid;
-
-  // Role badge
-  let roleBadge='';
-  if(srv&&srv.roles&&msg.authorId){
-    const memberRoleId=srv.memberRoles?.[msg.authorId];
-    const role=memberRoleId&&srv.roles?.find(r=>r.id===memberRoleId);
-    if(role)roleBadge=`<span class="role-badge" style="background:${role.color}22;color:${role.color};border:1px solid ${role.color}44;">${esc(role.name)}</span>`;
-  }
-
-  // Reactions
-  const reactions=msg.reactions||{};
-  const rctHtml=Object.entries(reactions).map(([emoji,data])=>{
-    const count=Object.keys(data||{}).length;
-    if(!count)return '';
-    const iMine=!!(data[ME.uid]);
-    return `<span class="rct${iMine?' mine':''}" onclick="toggleReaction('${msg.id}','${emoji}')">${emoji}<span class="rct-n">${count}</span></span>`;
-  }).join('');
 
   let content='';
-  const editAttr=mine?`ondblclick="startEdit('${msg.id}')" title="Doble clic para editar"`:'';
-  if(msg.text)content+=`<div class="mbub" id="bub-${msg.id}" ${editAttr}>${esc(msg.text).replace(/
-/g,'<br>')}</div>`;
+  if(msg.text)content+=`<div class="mbub">${esc(msg.text).replace(/\n/g,'<br>')}</div>`;
   if(msg.imageURL)content+=`<img class="msg-img" src="${msg.imageURL}" onclick="window.open(this.src,'_blank')">`;
-  if(mine&&msg.text)content+=`<div class="edit-hint">↵ guardar · Esc cancelar</div>`;
 
   row.innerHTML=`
     <div class="mav ${avColor}" onclick="showPCard(event,${JSON.stringify({name:msg.authorName,photo:msg.authorPhoto,avColor:msg.authorAvColor,uid:msg.authorId}).replace(/"/g,'&quot;')})">
@@ -1133,169 +983,17 @@ function buildMsgEl(msg){
     </div>
     <div class="mbody">
       <div class="mmeta">
-        <span class="mauthor">${esc(msg.authorName||'?')}${roleBadge}</span>
-        <span class="mts">${fmtTime(msg.createdAt)}${msg.edited?' <span style="font-size:9px;color:var(--t3);">(editado)</span>':''}</span>
+        <span class="mauthor">${esc(msg.authorName||'?')}</span>
+        <span class="mts">${fmtTime(msg.createdAt)}</span>
       </div>
       ${content}
-      <div class="mrcts">${rctHtml}<span class="rct-add" onclick="openRctPicker(event,'${msg.id}')">😊</span></div>
     </div>
     <div class="mact">
-      ${mine?`<button class="mab" onclick="startEdit('${msg.id}')" title="Editar">✏</button>`:''}
-      ${(mine||isOwner)?`<button class="mab" onclick="delMsg('${msg.id}')" title="Eliminar">🗑</button>`:''}
+      ${mine?`<button class="mab" onclick="delMsg('${msg.id}')" title="Eliminar">🗑</button>`:''}
     </div>`;
   return row;
 }
 
-// ── REACTIONS ──
-let rctPickerMsgId=null;
-const REACTION_EMOJIS=['👍','❤️','😂','🔥','🎉','😮','😢','👎','✅','🚀','💯','👀','🙏','💪','⭐'];
-
-function openRctPicker(e,msgId){
-  e.stopPropagation();
-  rctPickerMsgId=msgId;
-  document.getElementById('inlineRctPicker')?.remove();
-  const picker=document.createElement('div');
-  picker.id='inlineRctPicker';
-  picker.style.cssText='position:fixed;background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:8px;display:flex;gap:4px;flex-wrap:wrap;z-index:200;box-shadow:0 8px 30px rgba(0,0,0,.5);max-width:240px;';
-  picker.innerHTML=REACTION_EMOJIS.map(em=>
-    `<button onclick="toggleReaction('${msgId}','${em}');document.getElementById('inlineRctPicker')?.remove()"
-      style="background:none;border:none;font-size:20px;cursor:pointer;padding:3px;border-radius:6px;transition:transform .1s;"
-      onmouseover="this.style.transform='scale(1.3)'" onmouseout="this.style.transform=''">
-      ${em}</button>`).join('');
-  document.body.appendChild(picker);
-  const r=e.currentTarget.getBoundingClientRect();
-  picker.style.top=Math.min(r.top-90,window.innerHeight-200)+'px';
-  picker.style.left=Math.min(r.left,window.innerWidth-260)+'px';
-  setTimeout(()=>document.addEventListener('click',()=>picker.remove(),{once:true}),50);
-}
-
-async function toggleReaction(msgId,emoji){
-  if(!activeCh||!msgId)return;
-  const {db,doc,updateDoc,getDoc}=FB;
-  const path=activeCh.isDM
-    ?`dms/${activeCh.id}/messages/${msgId}`
-    :`servers/${activeCh.srvId}/channels/${activeCh.id}/messages/${msgId}`;
-  const snap=await getDoc(doc(db,path));
-  if(!snap.exists())return;
-  const reactions=snap.data().reactions||{};
-  if(!reactions[emoji])reactions[emoji]={};
-  if(reactions[emoji][ME.uid]){
-    delete reactions[emoji][ME.uid];
-    if(!Object.keys(reactions[emoji]).length)delete reactions[emoji];
-  } else {
-    reactions[emoji][ME.uid]=true;
-  }
-  await updateDoc(doc(db,path),{reactions});
-}
-
-// ── EDIT MESSAGE ──
-function startEdit(msgId){
-  const bub=document.getElementById('bub-'+msgId);
-  if(!bub||bub.classList.contains('editing'))return;
-  const orig=bub.innerText;
-  bub.dataset.orig=orig;
-  bub.classList.add('editing');
-  bub.contentEditable='true';
-  bub.focus();
-  const sel=window.getSelection(),range=document.createRange();
-  range.selectNodeContents(bub);range.collapse(false);
-  sel.removeAllRanges();sel.addRange(range);
-  bub.onkeydown=async(e)=>{
-    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();await saveEdit(msgId,bub);}
-    if(e.key==='Escape'){cancelEdit(bub);}
-  };
-}
-
-function cancelEdit(bub){
-  bub.classList.remove('editing');
-  bub.contentEditable='false';
-  bub.innerHTML=esc(bub.dataset.orig||'').replace(/
-/g,'<br>');
-  bub.onkeydown=null;
-}
-
-async function saveEdit(msgId,bub){
-  const newText=bub.innerText.trim();
-  if(!newText||newText===bub.dataset.orig){cancelEdit(bub);return;}
-  bub.classList.remove('editing');
-  bub.contentEditable='false';
-  bub.onkeydown=null;
-  const {db,doc,updateDoc}=FB;
-  const path=activeCh.isDM
-    ?`dms/${activeCh.id}/messages/${msgId}`
-    :`servers/${activeCh.srvId}/channels/${activeCh.id}/messages/${msgId}`;
-  await updateDoc(doc(db,path),{text:newText,edited:true});
-  toast('✏','Mensaje editado','');
-}
-
-// ── MESSAGE SEARCH ──
-let msgSearchCache=[];
-
-function openMsgSearch(){
-  if(!activeCh){toast('⚠','Selecciona un canal','');return;}
-  document.getElementById('msgSearchOverlay').style.display='block';
-  const inp=document.getElementById('msgSearchInput');
-  inp.value='';
-  document.getElementById('msgSearchResults').innerHTML=`<div class="sr-empty">🔍 Escribe para buscar mensajes en este canal</div>`;
-  inp.focus();
-}
-
-function closeMsgSearch(){
-  document.getElementById('msgSearchOverlay').style.display='none';
-  document.getElementById('msgSearchInput').value='';
-  document.getElementById('msgSearchResults').innerHTML='';
-}
-
-function searchMessages(query){
-  const q=(query||'').toLowerCase().trim();
-  const res=document.getElementById('msgSearchResults');
-  if(!q){res.innerHTML=`<div class="sr-empty">🔍 Escribe para buscar mensajes</div>`;return;}
-
-  // Search from Firestore snapshot already in DOM
-  const rows=document.querySelectorAll('#mwrap .mrow');
-  const results=[];
-  rows.forEach(row=>{
-    const bub=row.querySelector('.mbub');
-    if(!bub)return;
-    const text=bub.innerText||'';
-    if(text.toLowerCase().includes(q)){
-      const author=row.querySelector('.mauthor')?.textContent||'';
-      const ts=row.querySelector('.mts')?.textContent||'';
-      const avEl=row.querySelector('.mav');
-      const avColor=avEl?.className.replace('mav','').trim()||'av-a';
-      const imgSrc=avEl?.querySelector('img')?.src||'';
-      const highlighted=esc(text).replace(new RegExp(`(${esc(q)})`, 'gi'),'<mark>$1</mark>');
-      results.push({id:row.id,author,ts,text:highlighted,avColor,imgSrc});
-    }
-  });
-
-  if(!results.length){res.innerHTML=`<div class="sr-empty">Sin resultados para "<strong>${esc(q)}</strong>"</div>`;return;}
-  res.innerHTML=results.map(r=>`
-    <div class="sr-item" onclick="jumpToMsg('${r.id}');closeMsgSearch()">
-      <div class="sr-av ${r.avColor}">${r.imgSrc?`<img src="${r.imgSrc}">`:(r.author.slice(0,2).toUpperCase())}</div>
-      <div class="sr-body">
-        <div class="sr-meta">
-          <span class="sr-author">${esc(r.author)}</span>
-          <span class="sr-ts">${esc(r.ts)}</span>
-        </div>
-        <div class="sr-text">${r.text}</div>
-      </div>
-    </div>`).join('');
-}
-
-function jumpToMsg(rowId){
-  const el=document.getElementById(rowId);
-  if(!el)return;
-  el.scrollIntoView({behavior:'smooth',block:'center'});
-  el.style.background='var(--as)';
-  el.style.transition='background 1s';
-  setTimeout(()=>el.style.background='',1500);
-}
-
-// Close search on Escape
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'&&document.getElementById('msgSearchOverlay').style.display==='block')closeMsgSearch();
-});
 // ── SEND MESSAGE ──
 async function sendMsg(){
   const f=document.getElementById('ifield');
@@ -1368,94 +1066,35 @@ function renderChat(){
 }
 
 // ── MEMBERS ──
-let membersCache=[];
-
 async function loadMembers(srvId){
   if(!srvId)return;
   show('mpanel');
-  const srv=serversCache[srvId]||activeServer;if(!srv)return;
+  const srv=serversCache[srvId];if(!srv)return;
   const {db,doc,getDoc}=FB;
-  const list=document.getElementById('mpl');list.innerHTML='<div style="padding:12px 8px;color:var(--t3);font-size:11px;">Cargando...</div>';
-  const isOwner=srv.ownerId===ME.uid;
-
-  // Show/hide owner search bar
-  document.getElementById('mpSearch').style.display=isOwner?'block':'none';
-
-  const members=[];
+  const list=document.getElementById('mpl');list.innerHTML='';
+  const online=[];
   for(const uid of srv.members||[]){
     const snap=await getDoc(doc(db,'users',uid));
-    if(snap.exists())members.push({uid,...snap.data()});
+    if(snap.exists())online.push({uid,...snap.data()});
   }
-  membersCache=members;
-
-  // Update count
-  document.getElementById('mpMemberCount').textContent=`${members.length} miembro${members.length!==1?'s':''}`;
-
-  renderMemberList(members,srv);
-}
-
-function renderMemberList(members,srv){
-  const list=document.getElementById('mpl');list.innerHTML='';
-  const srv2=srv||(activeServer||serversCache[activeSrvId]);
-  const isOwner=srv2&&srv2.ownerId===ME.uid;
-
-  const online=members.filter(m=>m.status==='online'||m.status==='away');
-  const offline=members.filter(m=>m.status!=='online'&&m.status!=='away');
-
-  const makeSection=(label,arr)=>{
-    if(!arr.length)return;
+  const makeSection=(label,members)=>{
+    if(!members.length)return;
     const s=document.createElement('div');s.className='mpsec';
-    s.textContent=`${label} — ${arr.length}`;list.appendChild(s);
-    arr.forEach(m=>{
+    s.textContent=`${label} — ${members.length}`;list.appendChild(s);
+    members.forEach(m=>{
       const d=document.createElement('div');d.className='mpit';
       const avHtml=m.photoURL?`<img src="${m.photoURL}">`:`${ini(m.name)}`;
       const isMe=m.uid===ME.uid;
-      // Role badge
-      const memberRoleId=srv2?.memberRoles?.[m.uid];
-      const role=memberRoleId&&srv2?.roles?.find(r=>r.id===memberRoleId);
-      const roleBadge=role?`<span class="role-badge" style="background:${role.color}22;color:${role.color};border:1px solid ${role.color}44;font-size:8px;">${esc(role.name)}</span>`:'';
       d.innerHTML=`
-        <div class="mpav ${m.avColor||'av-a'}">${avHtml}<div class="sdot ${m.status||'offline'}" style="position:absolute;bottom:0;right:0;"></div></div>
-        <div style="flex:1;min-width:0;">
-          <div class="mp-nm" style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;">${esc(m.name)}${isMe?'<span style="font-size:9px;color:var(--t3);">(tú)</span>':''}${roleBadge}</div>
-          <div class="mp-sub" style="display:flex;align-items:center;gap:5px;">
-            <span>${m.email||''}</span>
-            ${isOwner?`<span style="font-size:9px;color:var(--t3);font-family:monospace;cursor:pointer;" onclick="navigator.clipboard.writeText('${m.uid}');toast('📋','UID copiado','')" title="Copiar UID">${m.uid?.slice(0,8)}…</span>`:''}
-          </div>
-        </div>
-        ${isOwner&&!isMe?`<div style="display:flex;gap:4px;">
-          <button class="mab" onclick="kickMember('${m.uid}')" title="Expulsar" style="font-size:11px;width:22px;height:22px;">👢</button>
-        </div>`:''}`;
+        <div class="mpav ${m.avColor||'av-a'}">${avHtml}<div class="sdot ${m.status||'online'}" style="position:absolute;bottom:0;right:0;"></div></div>
+        <div><div class="mp-nm">${esc(m.name)}${isMe?'<span style="font-size:9px;color:var(--t3);margin-left:4px;">(tú)</span>':''}</div>
+        <div class="mp-sub">${m.email||''}</div></div>`;
       list.appendChild(d);
     });
   };
-
   makeSection('En línea',online);
-  makeSection('Sin conexión',offline);
 }
 
-function filterMembers(query){
-  const srv=activeServer||serversCache[activeSrvId];
-  if(!srv||srv.ownerId!==ME.uid)return;
-  const q=(query||'').toLowerCase().trim();
-  if(!q){renderMemberList(membersCache,srv);return;}
-  const filtered=membersCache.filter(m=>
-    (m.name||'').toLowerCase().includes(q)||
-    (m.email||'').toLowerCase().includes(q)||
-    (m.uid||'').toLowerCase().includes(q)
-  );
-  renderMemberList(filtered,srv);
-}
-
-async function kickMember(uid){
-  const srv=activeServer||serversCache[activeSrvId];
-  if(!srv||srv.ownerId!==ME.uid)return;
-  if(!confirm('¿Expulsar a este miembro del servidor?'))return;
-  const {db,doc,updateDoc,arrayRemove}=FB;
-  await updateDoc(doc(db,'servers',srv.id),{members:arrayRemove(uid)});
-  toast('👢','Miembro expulsado','');
-  await loadMembers(srv.id);
-}
 function toggleMembers(){
   membersOpen=!membersOpen;
   document.getElementById('mpanel').style.display=membersOpen?'':'none';
@@ -1585,15 +1224,9 @@ function buildSettingsNav(){
     <div class="snav-sec">Mi cuenta</div>
     <div class="snav-it" data-pg="cuenta" onclick="showPage('cuenta')"><span class="si">👤</span> Cuenta</div>
     <div class="snav-it" data-pg="perfil" onclick="showPage('perfil')"><span class="si">🪪</span> Perfil</div>
-    <div class="snav-it" data-pg="privacidad" onclick="showPage('privacidad')"><span class="si">🔒</span> Privacidad</div>
     <div class="snav-sec">App</div>
     <div class="snav-it" data-pg="apariencia" onclick="showPage('apariencia')"><span class="si">🎨</span> Apariencia</div>
-    <div class="snav-it" data-pg="notificaciones" onclick="showPage('notificaciones')"><span class="si">🔔</span> Notificaciones</div>
-    <div class="snav-it" data-pg="accesibilidad" onclick="showPage('accesibilidad')"><span class="si">♿</span> Accesibilidad</div>
-    <div class="snav-sec">Servidor</div>
     <div class="snav-it" data-pg="servidor" onclick="showPage('servidor')"><span class="si">🖼</span> Servidor activo</div>
-    <div class="snav-it" data-pg="roles" onclick="showPage('roles')"><span class="si">🛡</span> Roles y permisos</div>
-    <div class="snav-it" data-pg="miembros-srv" onclick="showPage('miembros-srv')"><span class="si">👥</span> Miembros del servidor</div>
     <div class="snav-sec">Peligro</div>
     <div class="snav-it snav-danger" data-pg="salir" onclick="showPage('salir')"><span class="si">🚪</span> Cerrar sesión</div>`;
 }
@@ -1604,166 +1237,58 @@ function closeSovClick(e){if(e.target===document.getElementById('settingsOv'))do
 function showPage(page){
   document.querySelectorAll('.snav-it').forEach(i=>i.classList.toggle('on',i.dataset.pg===page));
   const c=document.getElementById('scnt');c.innerHTML='';
-  const pages={cuenta:pgCuenta,perfil:pgPerfil,privacidad:pgPrivacidad,apariencia:pgApariencia,notificaciones:pgNotif,accesibilidad:pgAccesibilidad,servidor:pgServidor,roles:pgRoles,'miembros-srv':pgMiembrosSrv,salir:pgSalir};
+  const pages={cuenta:pgCuenta,perfil:pgPerfil,apariencia:pgApariencia,servidor:pgServidor,salir:pgSalir};
   if(pages[page])pages[page](c);
 }
 
 function pgCuenta(c){
   const cldOk=isCloudinaryConfigured();
-  const statusOpts=[
-    {val:'online',label:'🟢 En línea'},{val:'away',label:'🟡 Ausente'},
-    {val:'busy',label:'🔴 No molestar'},{val:'invisible',label:'⚫ Invisible'}
-  ];
-  const cur=myProfile?.status||'online';
   c.innerHTML=`<div class="s-ttl">👤 Mi Cuenta</div>
-    <div class="s-sub">Información y configuración de tu cuenta.</div>
-
+    <div class="s-sub">Información de tu cuenta Firebase.</div>
     <div class="s-sec">
       <div class="s-sec-lbl">Sesión activa</div>
       <div style="background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:14px;display:flex;align-items:center;gap:12px;">
-        ${myProfile?.photoURL||ME?.photoURL
-          ?`<img src="${myProfile?.photoURL||ME.photoURL}" style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);">`
-          :`<div class="mav ${myProfile?.avColor||'av-a'}" style="width:52px;height:52px;font-size:17px;">${ini(ME?.displayName||'?')}</div>`}
-        <div style="flex:1;">
-          <div style="font-size:15px;font-weight:800;">${esc(myProfile?.name||ME?.displayName||'?')}</div>
+        ${ME?.photoURL?`<img src="${ME.photoURL}" style="width:48px;height:48px;border-radius:50%;">`:`<div class="mav ${myProfile?.avColor||'av-a'}" style="width:48px;height:48px;font-size:16px;">${ini(ME?.displayName||'?')}</div>`}
+        <div>
+          <div style="font-size:15px;font-weight:800;">${esc(ME?.displayName||'?')}</div>
           <div style="font-size:11px;color:var(--t3);">${esc(ME?.email||'')}</div>
-          <div style="display:flex;align-items:center;gap:7px;margin-top:4px;">
-            <code style="font-size:10px;color:var(--accent);background:var(--bg3);border:1px solid var(--border);padding:2px 7px;border-radius:5px;">UID: ${ME?.uid?.slice(0,14)}...</code>
-            <button class="s-btn secondary" style="padding:3px 9px;font-size:10px;" onclick="navigator.clipboard.writeText('${ME?.uid||''}');toast('📋','UID copiado','')">📋 Copiar</button>
-          </div>
+          <div style="font-size:10px;color:var(--accent);font-family:monospace;margin-top:2px;">UID: ${ME?.uid?.slice(0,12)}...</div>
         </div>
       </div>
     </div>
-
-    <div class="s-sec">
-      <div class="s-sec-lbl">Estado de presencia</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        ${statusOpts.map(s=>`
-          <div onclick="setMyStatus('${s.val}')" id="statusOpt-${s.val}"
-            style="display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--bg2);border:2px solid ${cur===s.val?'var(--accent)':'var(--border)'};border-radius:9px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s;">
-            ${s.label}
-          </div>`).join('')}
-      </div>
-    </div>
-
-    <div class="s-sec">
-      <div class="s-sec-lbl">Nombre mostrado</div>
-      <div class="s-fg">
-        <input class="si-input" id="acNm" value="${esc(myProfile?.name||ME?.displayName||'')}">
-      </div>
-      <button class="s-btn primary" onclick="saveAccountName()">💾 Guardar nombre</button>
-    </div>
-
     <div class="s-sec">
       <div class="s-sec-lbl">Almacenamiento de imágenes</div>
       ${cldOk
-        ?`<div class="cld-badge" style="display:inline-flex;align-items:center;gap:6px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);border-radius:8px;padding:7px 12px;font-size:12px;color:var(--ok);margin-bottom:7px;">☁️ Cloudinary conectado</div>
-          <p style="font-size:11px;color:var(--t2);line-height:1.6;">Las imágenes se suben a Cloudinary. No se usa Firebase Storage.</p>`
-        :`<div style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);border-radius:9px;padding:10px 14px;font-size:12px;color:var(--warn);">
-            ⚠ Cloudinary no configurado. Edita <code>CLOUDINARY_CLOUD_NAME</code> y <code>CLOUDINARY_UPLOAD_PRESET</code> en el HTML.
+        ? `<div class="cld-badge">☁️ Cloudinary conectado</div><p style="font-size:11px;color:var(--t2);">Las imágenes se suben a Cloudinary (gratis). No se usa Firebase Storage.</p>`
+        : `<div style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);border-radius:9px;padding:10px 14px;font-size:12px;color:var(--warn);">
+            ⚠ Cloudinary no configurado. Edita <code>CLOUDINARY_CLOUD_NAME</code> y <code>CLOUDINARY_UPLOAD_PRESET</code> en el HTML para poder subir imágenes.
            </div>`
       }
     </div>
-
-    <div class="s-sec">
-      <div class="s-sec-lbl">Cuenta Google</div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:10px 14px;font-size:12px;color:var(--t2);line-height:1.6;">
-        Sesión iniciada con <strong style="color:var(--text);">Google</strong>.<br>
-        El correo <strong style="color:var(--accent);">${esc(ME?.email||'')}</strong> está vinculado permanentemente.
-      </div>
-    </div>
-
-    <button class="s-btn danger" style="margin-top:4px;" onclick="doSignOut();document.getElementById('settingsOv').classList.remove('open');">🚪 Cerrar sesión</button>`;
-}
-
-async function saveAccountName(){
-  const name=document.getElementById('acNm').value.trim();
-  if(!name)return;
-  const {db,doc,updateDoc}=FB;
-  await updateDoc(doc(db,'users',ME.uid),{name});
-  myProfile={...myProfile,name};
-  updateMyAvatar();
-  toast('✅','Nombre actualizado',name);
-}
-
-async function setMyStatus(status){
-  const {db,doc,updateDoc}=FB;
-  await updateDoc(doc(db,'users',ME.uid),{status}).catch(()=>{});
-  myProfile={...myProfile,status};
-  // Update UI
-  document.querySelectorAll('[id^="statusOpt-"]').forEach(el=>{
-    const isActive=el.id===`statusOpt-${status}`;
-    el.style.borderColor=isActive?'var(--accent)':'var(--border)';
-  });
-  // Update rail dot
-  const dot=document.querySelector('.my-av-rail .sdot');
-  if(dot){dot.className=`sdot ${status}`;}
-  toast('✅','Estado actualizado','');
+    <button class="s-btn danger" onclick="doSignOut();document.getElementById('settingsOv').classList.remove('open');">🚪 Cerrar sesión</button>`;
 }
 
 async function pgPerfil(c){
   const photo=myProfile?.photoURL||ME?.photoURL;
-  const av=myProfile?.avColor||'av-a';
-  const AVCOLORS=['av-a','av-b','av-c','av-d','av-e','av-f','av-g','av-h'];
-  const avNames={
-    'av-a':'Violeta','av-b':'Verde','av-c':'Rosa','av-d':'Ámbar',
-    'av-e':'Azul','av-f':'Fucsia','av-g':'Naranja','av-h':'Aguamarina'
-  };
   c.innerHTML=`<div class="s-ttl">🪪 Perfil</div>
-    <div class="s-sub">Lo que los demás ven en tu tarjeta de perfil.</div>
-
+    <div class="s-sub">Lo que los demás ven de ti.</div>
     <div class="s-sec">
       <div class="s-sec-lbl">Foto de perfil</div>
       <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
-        <div style="position:relative;flex-shrink:0;">
-          ${photo
-            ?`<img src="${photo}" id="pfAvPreview" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid var(--accent);">`
-            :`<div class="mav ${av}" id="pfAvPreview" style="width:70px;height:70px;font-size:24px;border:3px solid var(--accent);">${ini(myProfile?.name||'?')}</div>`}
-          <div style="position:absolute;bottom:0;right:0;width:22px;height:22px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;border:2px solid var(--bg1);" onclick="document.getElementById('avatarInput').click()">📷</div>
-        </div>
+        ${photo
+          ?`<img src="${photo}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">`
+          :`<div class="mav ${myProfile?.avColor||'av-a'}" style="width:64px;height:64px;font-size:22px;">${ini(myProfile?.name||'?')}</div>`}
         <div style="display:flex;flex-direction:column;gap:6px;">
           <button class="s-btn secondary" onclick="document.getElementById('avatarInput').click()">📷 Subir foto (Cloudinary)</button>
-          ${photo?`<button class="s-btn danger" style="font-size:11px;padding:5px 10px;" onclick="removeAvatar()">✕ Quitar foto</button>`:''}
-          <span style="font-size:10px;color:var(--t3);">Admite JPG, PNG, GIF animado</span>
+          <span style="font-size:10px;color:var(--t3);">Gratis · Sin Firebase Storage</span>
         </div>
       </div>
     </div>
-
-    <div class="s-sec">
-      <div class="s-sec-lbl">Color de avatar (sin foto)</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        ${AVCOLORS.map(a=>`
-          <div onclick="setAvColor('${a}')" title="${avNames[a]||a}"
-            class="mav ${a}" id="avopt-${a}"
-            style="width:36px;height:36px;font-size:12px;cursor:pointer;border:3px solid ${av===a?'var(--accent)':'transparent'};transition:all .2s;">
-            ${ini(myProfile?.name||'?')}
-          </div>`).join('')}
-      </div>
-    </div>
-
     <div class="s-sec">
       <div class="s-sec-lbl">Información</div>
       <div class="s-fg"><label class="s-lbl">Nombre mostrado</label><input class="si-input" id="pfNm" value="${esc(myProfile?.name||ME?.displayName||'')}"></div>
-      <div class="s-fg"><label class="s-lbl">Bio</label><textarea class="si-ta" id="pfBio" placeholder="Cuéntanos algo de ti...">${esc(myProfile?.bio||'')}</textarea></div>
+      <div class="s-fg"><label class="s-lbl">Bio</label><textarea class="si-ta" id="pfBio">${esc(myProfile?.bio||'')}</textarea></div>
       <button class="s-btn primary" onclick="saveProfile()">💾 Guardar perfil</button>
-    </div>
-
-    <div class="s-sec">
-      <div class="s-sec-lbl">Redes sociales</div>
-      ${[
-        {id:'github',n:'GitHub',ico:'🐙',ph:'usuario o URL'},
-        {id:'twitter',n:'Twitter/X',ico:'𝕏',ph:'@usuario'},
-        {id:'instagram',n:'Instagram',ico:'📸',ph:'@usuario'},
-        {id:'youtube',n:'YouTube',ico:'▶',ph:'canal o URL'},
-        {id:'twitch',n:'Twitch',ico:'🟣',ph:'usuario'},
-        {id:'website',n:'Sitio web',ico:'🌐',ph:'https://...'},
-      ].map(conn=>`
-        <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px;">
-          <span style="font-size:18px;width:26px;text-align:center;">${conn.ico}</span>
-          <span style="font-size:12px;color:var(--t2);width:80px;flex-shrink:0;">${conn.n}</span>
-          <input class="si-input" style="flex:1;" placeholder="${conn.ph}" value="${esc(myProfile?.connections?.[conn.id]||'')}" oninput="updateConnField('${conn.id}',this.value)">
-        </div>`).join('')}
-      <button class="s-btn primary" style="margin-top:5px;" onclick="saveConnections()">💾 Guardar conexiones</button>
     </div>`;
 }
 
@@ -1777,322 +1302,26 @@ async function saveProfile(){
   toast('✅','Perfil actualizado','');
 }
 
-async function removeAvatar(){
-  const {db,doc,updateDoc}=FB;
-  await updateDoc(doc(db,'users',ME.uid),{photoURL:null});
-  myProfile={...myProfile,photoURL:null};
-  updateMyAvatar();
-  toast('🗑','Foto eliminada','');
-  showPage('perfil');
-}
-
-function updateConnField(id,val){
-  if(!myProfile.connections)myProfile.connections={};
-  myProfile.connections[id]=val;
-}
-
-async function saveConnections(){
-  const {db,doc,updateDoc}=FB;
-  await updateDoc(doc(db,'users',ME.uid),{connections:myProfile.connections||{}});
-  toast('✅','Conexiones guardadas','');
-}
-
-async function setAvColor(avColor){
-  const {db,doc,updateDoc}=FB;
-  await updateDoc(doc(db,'users',ME.uid),{avColor});
-  myProfile={...myProfile,avColor};
-  updateMyAvatar();
-  // Update UI borders
-  document.querySelectorAll('[id^="avopt-"]').forEach(el=>{
-    el.style.borderColor=el.id===`avopt-${avColor}`?'var(--accent)':'transparent';
-  });
-  toast('🎨','Color actualizado','');
-}
-
 function pgApariencia(c){
-  const ACCENTS=['#5e6ad2','#e879f9','#00d4aa','#f59e0b','#3b82f6','#ec4899','#10b981','#f97316','#ef4444','#a855f7'];
-  const FONTS=[
-    {n:'Cabinet Grotesk',l:'Cabinet Grotesk (predeterminada)'},
-    {n:'Georgia',l:'Georgia'},
-    {n:'Trebuchet MS',l:'Trebuchet MS'},
-    {n:'Palatino',l:'Palatino'},
-    {n:'monospace',l:'Monoespaciada'},
-  ];
-  const BG_THEMES=[
-    {l:'Cosmos',bg0:'#0a0a0f',bg1:'#111118',bg2:'#18181f'},
-    {l:'Carbón',bg0:'#0f0f0f',bg1:'#181818',bg2:'#202020'},
-    {l:'Océano',bg0:'#070d1a',bg1:'#0b1428',bg2:'#101e38'},
-    {l:'Bosque',bg0:'#080f09',bg1:'#0d180e',bg2:'#122013'},
-    {l:'Vino',bg0:'#0f0708',bg1:'#190c0d',bg2:'#211213'},
-    {l:'Pizarra',bg0:'#0a0e14',bg1:'#111620',bg2:'#181f2c'},
-  ];
-  const curAccent=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#5e6ad2';
-  const curFont=localStorage.getItem('lynk-font')||'Cabinet Grotesk';
-  const curBubble=localStorage.getItem('lynk-bubble')||'#5e6ad2';
-  const curMode=localStorage.getItem('lynk-mode')||'dark';
-
   c.innerHTML=`<div class="s-ttl">🎨 Apariencia</div>
-    <div class="s-sub">Personaliza colores, fuente, fondo y tema.</div>
-
-    <div class="s-sec">
-      <div class="s-sec-lbl">Tema de color</div>
-      ${[
-        {id:'dark',ico:'🌑',l:'Modo oscuro',d:'Tema oscuro predeterminado'},
-        {id:'light',ico:'☀️',l:'Modo claro',d:'Fondo claro, texto oscuro'},
-        {id:'contrast',ico:'⚡',l:'Alto contraste',d:'Máxima legibilidad'},
-      ].map(m=>`
-        <div onclick="setColorMode('${m.id}')" id="modeCard-${m.id}"
-          style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg2);border:2px solid ${curMode===m.id?'var(--accent)':'var(--border)'};border-radius:11px;cursor:pointer;margin-bottom:8px;transition:all .2s;">
-          <span style="font-size:22px;">${m.ico}</span>
-          <div><div style="font-size:13px;font-weight:700;">${m.l}</div><div style="font-size:11px;color:var(--t3);">${m.d}</div></div>
-          ${curMode===m.id?'<span style="margin-left:auto;color:var(--accent);font-size:16px;">✔</span>':''}
-        </div>`).join('')}
-    </div>
-
+    <div class="s-sub">Personaliza el color de acento.</div>
     <div class="s-sec">
       <div class="s-sec-lbl">Color de acento</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:9px;">
-        ${ACCENTS.map(col=>`
-          <div onclick="setAccent('${col}')" style="width:30px;height:30px;border-radius:50%;background:${col};cursor:pointer;border:3px solid ${curAccent===col?'#fff':'transparent'};transition:all .2s;"
-            onmouseover="this.style.borderColor='#fff'" onmouseout="this.style.borderColor='${curAccent===col?'#fff':'transparent'}'"></div>`).join('')}
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        ${['#5e6ad2','#e879f9','#00d4aa','#f59e0b','#3b82f6','#ec4899','#10b981','#f97316','#ef4444','#a855f7'].map(col=>`
+        <div onclick="setAccent('${col}')" style="width:28px;height:28px;border-radius:50%;background:${col};cursor:pointer;border:3px solid transparent;transition:all .2s;"
+          onmouseover="this.style.borderColor='#fff'" onmouseout="this.style.borderColor='transparent'"></div>`).join('')}
       </div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <input type="color" value="${curAccent}" oninput="setAccent(this.value)" style="width:36px;height:36px;border:none;border-radius:8px;cursor:pointer;padding:2px;background:var(--bg2);border:1px solid var(--border);">
-        <input class="si-input" id="accentHexIn" value="${curAccent}" style="width:110px;height:36px;padding:6px 10px;font-family:monospace;font-size:12px;" placeholder="#5e6ad2" oninput="if(this.value.match(/^#[0-9a-fA-F]{6}$/))setAccent(this.value)">
+      <div style="display:flex;align-items:center;gap:8px;margin-top:9px;">
+        <input type="color" value="${getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#5e6ad2'}" oninput="setAccent(this.value)" style="width:36px;height:36px;border:none;border-radius:8px;cursor:pointer;padding:2px;background:var(--bg2);">
         <span style="font-size:11px;color:var(--t3);">Personalizado</span>
       </div>
-    </div>
-
-    <div class="s-sec">
-      <div class="s-sec-lbl">Color de mis burbujas</div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-        <input type="color" value="${curBubble}" oninput="setBubble(this.value)" style="width:36px;height:36px;border:none;border-radius:8px;cursor:pointer;padding:2px;background:var(--bg2);border:1px solid var(--border);">
-        <input class="si-input" id="bubbleHexIn" value="${curBubble}" style="width:110px;height:36px;padding:6px 10px;font-family:monospace;font-size:12px;" placeholder="#5e6ad2" oninput="if(this.value.match(/^#[0-9a-fA-F]{6}$/))setBubble(this.value)">
-      </div>
-      <div style="background:var(--bg2);border-radius:9px;padding:11px;display:flex;flex-direction:column;gap:6px;">
-        <div style="align-self:flex-start;padding:7px 12px;border-radius:11px 11px 11px 3px;font-size:12px;background:var(--bg3);border:1px solid var(--border);">¡Hola! ¿Cómo va? 👋</div>
-        <div id="bubblePreview" style="align-self:flex-end;padding:7px 12px;border-radius:11px 11px 3px 11px;font-size:12px;background:var(--me-bg);border:1px solid var(--me-b);">¡Todo genial! 🚀</div>
-      </div>
-    </div>
-
-    <div class="s-sec">
-      <div class="s-sec-lbl">Fuente de texto</div>
-      <div style="display:flex;gap:7px;flex-wrap:wrap;">
-        ${FONTS.map(f=>`
-          <div onclick="setFont('${f.n}')" id="fontOpt-${f.n.replace(/\s+/g,'_')}"
-            style="padding:7px 14px;background:var(--bg2);border:2px solid ${curFont===f.n?'var(--accent)':'var(--border)'};border-radius:20px;font-size:12px;cursor:pointer;font-family:'${f.n}',sans-serif;transition:all .2s;">
-            ${f.l}
-          </div>`).join('')}
-      </div>
-    </div>
-
-    <div class="s-sec">
-      <div class="s-sec-lbl">Tema de fondo</div>
-      <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:10px;">
-        ${BG_THEMES.map((th,i)=>`
-          <div onclick="setBgTheme(${i})" style="cursor:pointer;text-align:center;">
-            <div style="width:54px;height:38px;border-radius:8px;background:linear-gradient(135deg,${th.bg0},${th.bg2});border:2px solid var(--border);transition:all .2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'"></div>
-            <div style="font-size:9px;color:var(--t3);margin-top:3px;">${th.l}</div>
-          </div>`).join('')}
-      </div>
-
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-        <span style="font-size:11px;color:var(--t3);">Color personalizado:</span>
-        <input type="color" value="${localStorage.getItem('lynk-bgColor')||'#0a0a0f'}" oninput="setBgColor(this.value)" style="width:36px;height:36px;border:none;border-radius:8px;cursor:pointer;padding:2px;background:var(--bg2);border:1px solid var(--border);">
-        <input class="si-input" id="bgColorHexIn" value="${localStorage.getItem('lynk-bgColor')||'#0a0a0f'}" style="width:110px;height:36px;padding:6px 10px;font-family:monospace;font-size:12px;" placeholder="#0a0a0f" oninput="if(this.value.match(/^#[0-9a-fA-F]{6}$/))setBgColor(this.value)">
-      </div>
-    </div>
-
-    <div class="s-sec">
-      <div class="s-sec-lbl">Imagen de fondo</div>
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
-        <button class="s-btn secondary" onclick="document.getElementById('bgInput').click()">🖼 Subir imagen / GIF</button>
-        ${localStorage.getItem('lynk-bgImg')?`<span style="font-size:11px;color:var(--ok);">✔ Activa</span><button class="s-btn danger" style="padding:5px 10px;font-size:11px;" onclick="removeBgImg()">✕ Quitar</button>`:''}
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <span style="font-size:11px;color:var(--t3);">Opacidad:</span>
-        <input type="range" min="3" max="40" value="${localStorage.getItem('lynk-bgOpacity')||12}" oninput="setBgOpacity(this.value)" style="flex:1;cursor:pointer;">
-        <span id="bgOpVal" style="font-size:11px;color:var(--t3);width:30px;">${localStorage.getItem('lynk-bgOpacity')||12}%</span>
-      </div>
-    </div>
-
-    <button class="s-btn secondary" onclick="resetAppearance()">↺ Restablecer todo</button>`;
+    </div>`;
 }
-
-function setColorMode(mode){
-  localStorage.setItem('lynk-mode',mode);
-  document.body.classList.remove('light-mode','high-contrast');
-  if(mode==='light')document.body.classList.add('light-mode');
-  else if(mode==='contrast')document.body.classList.add('high-contrast');
-  // Refresh page to update borders
-  showPage('apariencia');
-}
-
-function hexA(h,a){try{const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return`rgba(${r},${g},${b},${a})`;}catch(e){return`rgba(94,106,210,${a})`;}}
 
 function setAccent(col){
   document.documentElement.style.setProperty('--accent',col);
-  document.documentElement.style.setProperty('--as',hexA(col,.13));
-  document.documentElement.style.setProperty('--ab',hexA(col,.26));
   localStorage.setItem('lynk-accent',col);
-  const inp=document.getElementById('accentHexIn');if(inp)inp.value=col;
-}
-
-function setBubble(col){
-  document.documentElement.style.setProperty('--me-bg',hexA(col,.15));
-  document.documentElement.style.setProperty('--me-b',hexA(col,.3));
-  localStorage.setItem('lynk-bubble',col);
-  const p=document.getElementById('bubblePreview');
-  if(p){p.style.background=hexA(col,.15);p.style.borderColor=hexA(col,.3);}
-  const inp=document.getElementById('bubbleHexIn');if(inp)inp.value=col;
-}
-
-function setFont(name){
-  document.documentElement.style.setProperty('--app-font',`'${name}',sans-serif`);
-  document.body.style.fontFamily=`'${name}',sans-serif`;
-  localStorage.setItem('lynk-font',name);
-  document.querySelectorAll('[id^="fontOpt-"]').forEach(el=>{
-    const isActive=el.id===`fontOpt-${name.replace(/\s+/g,'_')}`;
-    el.style.borderColor=isActive?'var(--accent)':'var(--border)';
-  });
-}
-
-function lightenBg(hex,amount){try{let r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);r=Math.min(255,r+amount);g=Math.min(255,g+amount);b=Math.min(255,b+amount);return`#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;}catch(e){return hex;}}
-
-function setBgColor(col){
-  const mid=lightenBg(col,8);const light=lightenBg(col,16);
-  document.documentElement.style.setProperty('--bg0',col);
-  document.documentElement.style.setProperty('--bg1',mid);
-  document.documentElement.style.setProperty('--bg2',light);
-  localStorage.setItem('lynk-bgColor',col);
-  const inp=document.getElementById('bgColorHexIn');if(inp)inp.value=col;
-}
-
-function setBgTheme(i){
-  const BG_THEMES=[
-    {bg0:'#0a0a0f',bg1:'#111118',bg2:'#18181f'},
-    {bg0:'#0f0f0f',bg1:'#181818',bg2:'#202020'},
-    {bg0:'#070d1a',bg1:'#0b1428',bg2:'#101e38'},
-    {bg0:'#080f09',bg1:'#0d180e',bg2:'#122013'},
-    {bg0:'#0f0708',bg1:'#190c0d',bg2:'#211213'},
-    {bg0:'#0a0e14',bg1:'#111620',bg2:'#181f2c'},
-  ];
-  const th=BG_THEMES[i];if(!th)return;
-  document.documentElement.style.setProperty('--bg0',th.bg0);
-  document.documentElement.style.setProperty('--bg1',th.bg1);
-  document.documentElement.style.setProperty('--bg2',th.bg2);
-  localStorage.removeItem('lynk-bgColor');
-}
-
-function setBgOpacity(v){
-  document.documentElement.style.setProperty('--bg-opacity',(v/100));
-  localStorage.setItem('lynk-bgOpacity',v);
-  const el=document.getElementById('bgOpVal');if(el)el.textContent=v+'%';
-}
-
-function removeBgImg(){
-  document.documentElement.style.setProperty('--custom-bg','none');
-  localStorage.removeItem('lynk-bgImg');
-  showPage('apariencia');
-  toast('✅','Fondo quitado','');
-}
-
-function resetAppearance(){
-  ['lynk-accent','lynk-bubble','lynk-font','lynk-mode','lynk-bgColor','lynk-bgImg','lynk-bgOpacity'].forEach(k=>localStorage.removeItem(k));
-  document.documentElement.style.setProperty('--accent','#5e6ad2');
-  document.documentElement.style.setProperty('--as','rgba(94,106,210,.13)');
-  document.documentElement.style.setProperty('--ab','rgba(94,106,210,.26)');
-  document.documentElement.style.setProperty('--me-bg','rgba(94,106,210,.15)');
-  document.documentElement.style.setProperty('--me-b','rgba(94,106,210,.3)');
-  document.documentElement.style.setProperty('--bg0','#0a0a0f');
-  document.documentElement.style.setProperty('--bg1','#111118');
-  document.documentElement.style.setProperty('--bg2','#18181f');
-  document.documentElement.style.setProperty('--app-font',"'Cabinet Grotesk',sans-serif");
-  document.documentElement.style.setProperty('--custom-bg','none');
-  document.body.classList.remove('light-mode','high-contrast');
-  document.body.style.fontFamily="'Cabinet Grotesk',sans-serif";
-  showPage('apariencia');
-  toast('✅','Apariencia restablecida','');
-}
-
-// File input for background image
-document.addEventListener('DOMContentLoaded',()=>{
-  const bgIn=document.getElementById('bgInput');
-  if(bgIn&&!bgIn._bound){bgIn._bound=true;bgIn.addEventListener('change',e=>{
-    const f=e.target.files[0];if(!f)return;
-    const r=new FileReader();r.onload=ev=>{
-      document.documentElement.style.setProperty('--custom-bg',`url(${ev.target.result})`);
-      localStorage.setItem('lynk-bgImg',ev.target.result);
-      showPage('apariencia');toast('🖼','Fondo actualizado','');
-    };r.readAsDataURL(f);
-  });}
-});
-
-function pgPrivacidad(c){
-  c.innerHTML=`<div class="s-ttl">🔒 Privacidad</div>
-    <div class="s-sub">Controla quién puede ver tu información.</div>
-    ${[
-      {ico:'👁',t:'Mostrar estado en línea',d:'Los demás ven si estás conectado',k:'priv-status',def:true},
-      {ico:'🔗',t:'Mostrar redes sociales',d:'Visible en tu tarjeta de perfil',k:'priv-conns',def:true},
-      {ico:'📧',t:'Permitir DMs de desconocidos',d:'Usuarios que no están en tus servidores',k:'priv-dms',def:true},
-      {ico:'📢',t:'Aparecer en búsquedas',d:'Otros pueden encontrarte por correo',k:'priv-search',def:false},
-    ].map(row=>{
-      const on=localStorage.getItem(row.k)!==null?localStorage.getItem(row.k)==='true':row.def;
-      return`<div class="s-row">
-        <div class="s-row-ico">${row.ico}</div>
-        <div class="s-row-inf"><div class="s-row-title">${row.t}</div><div class="s-row-desc">${row.d}</div></div>
-        <div class="s-row-act"><div class="toggle${on?' on':''}" onclick="this.classList.toggle('on');localStorage.setItem('${row.k}',this.classList.contains('on'))"></div></div>
-      </div>`;}).join('')}`;
-}
-
-function pgNotif(c){
-  c.innerHTML=`<div class="s-ttl">🔔 Notificaciones</div>
-    <div class="s-sub">Controla cómo y cuándo recibes alertas.</div>
-    ${[
-      {ico:'🔔',t:'Notificaciones del navegador',d:'Alertas nativas del sistema',k:'notif-browser',def:false},
-      {ico:'💬',t:'Menciones',d:'Cuando alguien te menciona con @',k:'notif-mentions',def:true},
-      {ico:'✉',t:'Mensajes directos',d:'Nuevos DMs',k:'notif-dms',def:true},
-      {ico:'📢',t:'Anuncios del servidor',d:'Canales de tipo Anuncios',k:'notif-announce',def:true},
-      {ico:'🔇',t:'Silenciar todo',d:'Desactiva todas las notificaciones',k:'notif-mute',def:false},
-    ].map(row=>{
-      const on=localStorage.getItem(row.k)!==null?localStorage.getItem(row.k)==='true':row.def;
-      return`<div class="s-row">
-        <div class="s-row-ico">${row.ico}</div>
-        <div class="s-row-inf"><div class="s-row-title">${row.t}</div><div class="s-row-desc">${row.d}</div></div>
-        <div class="s-row-act"><div class="toggle${on?' on':''}" onclick="this.classList.toggle('on');localStorage.setItem('${row.k}',this.classList.contains('on'))"></div></div>
-      </div>`;}).join('')}
-    <button class="s-btn primary" style="margin-top:14px;" onclick="reqNotif()">🔔 Activar notificaciones del navegador</button>`;
-}
-
-function reqNotif(){
-  if(!('Notification'in window))return;
-  Notification.requestPermission().then(p=>{toast('🔔',p==='granted'?'¡Activadas!':'Denegadas','');});
-}
-
-function pgAccesibilidad(c){
-  c.innerHTML=`<div class="s-ttl">♿ Accesibilidad</div>
-    <div class="s-sub">Ajusta la interfaz para mayor comodidad.</div>
-    ${[
-      {ico:'🔠',t:'Texto más grande',d:'Aumenta el tamaño base de fuente',k:'acc-bigtext',def:false},
-      {ico:'✨',t:'Reducir animaciones',d:'Desactiva transiciones y efectos',k:'acc-motion',def:false},
-      {ico:'🎨',t:'Modo alto contraste',d:'Equivale al tema de alto contraste',k:'acc-contrast',def:false},
-      {ico:'⌨️',t:'Navegación por teclado mejorada',d:'Resalta el foco visible',k:'acc-focus',def:false},
-    ].map(row=>{
-      const on=localStorage.getItem(row.k)!==null?localStorage.getItem(row.k)==='true':row.def;
-      return`<div class="s-row">
-        <div class="s-row-ico">${row.ico}</div>
-        <div class="s-row-inf"><div class="s-row-title">${row.t}</div><div class="s-row-desc">${row.d}</div></div>
-        <div class="s-row-act"><div class="toggle${on?' on':''}" onclick="applyAccessibility('${row.k}',this)"></div></div>
-      </div>`;}).join('')}`;
-}
-
-function applyAccessibility(key,el){
-  el.classList.toggle('on');
-  const on=el.classList.contains('on');
-  localStorage.setItem(key,on);
-  if(key==='acc-bigtext'){document.documentElement.style.fontSize=on?'16px':'14px';}
-  if(key==='acc-motion'){document.documentElement.style.setProperty('--transition',on?'none':'all .2s');}
-  if(key==='acc-contrast'){on?document.body.classList.add('high-contrast'):document.body.classList.remove('high-contrast');}
 }
 
 async function pgServidor(c){
@@ -2139,229 +1368,6 @@ async function deleteSrv(srvId){
   document.getElementById('settingsOv').classList.remove('open');
   renderChat();
   toast('🗑','Servidor eliminado','');
-}
-
-// ── ROLES PAGE ──
-const ALL_PERMS=[
-  {id:'send_messages',n:'✉ Enviar mensajes'},
-  {id:'delete_messages',n:'🗑 Borrar mensajes'},
-  {id:'attach_files',n:'📎 Adjuntar archivos'},
-  {id:'manage_channels',n:'📋 Gestionar canales'},
-  {id:'manage_roles',n:'🛡 Gestionar roles'},
-  {id:'manage_members',n:'👥 Gestionar miembros'},
-  {id:'kick',n:'👢 Expulsar miembros'},
-  {id:'ban',n:'🔨 Banear miembros'},
-  {id:'mention_all',n:'📢 Mencionar @todos'},
-  {id:'admin',n:'⭐ Administrador'},
-];
-
-async function pgRoles(c){
-  const srv=activeServer||serversCache[activeSrvId];
-  if(!srv){c.innerHTML=`<div class="s-ttl">🛡 Roles</div><div class="s-sub" style="color:var(--warn);">Selecciona un servidor primero.</div>`;return;}
-  if(srv.ownerId!==ME.uid){c.innerHTML=`<div class="s-ttl">🛡 Roles</div><div class="s-sub">Solo el dueño puede gestionar roles.</div>`;return;}
-
-  const roles=srv.roles||[];
-  c.innerHTML=`<div class="s-ttl">🛡 Roles y permisos</div>
-    <div class="s-sub">Crea roles con permisos personalizados para <strong>${esc(srv.name)}</strong>.</div>
-
-    <div id="rolesList">
-      ${roles.length?roles.map(r=>`
-        <div class="role-row" id="rolerow-${r.id}">
-          <div class="role-dot" style="background:${r.color};box-shadow:0 0 8px ${r.color}66;"></div>
-          <div style="flex:1;">
-            <div style="font-size:13px;font-weight:700;color:${r.color};">${esc(r.name)}</div>
-            <div style="font-size:10px;color:var(--t3);margin-top:2px;">${Object.keys(r.perms||{}).map(p=>ALL_PERMS.find(x=>x.id===p)?.n||p).join(' · ')||'Sin permisos'}</div>
-          </div>
-          <button class="s-btn secondary" style="padding:5px 10px;font-size:11px;" onclick="openRoleEditor('${r.id}')">✏ Editar</button>
-          <button class="s-btn danger" style="padding:5px 10px;font-size:11px;" onclick="deleteRole('${r.id}')">✕</button>
-        </div>`).join('')
-      :`<div style="color:var(--t3);font-size:13px;padding:16px 0;">Sin roles aún.</div>`}
-    </div>
-    <button class="s-btn primary" style="margin-top:12px;" onclick="openRoleEditor(null)">＋ Crear rol</button>
-
-    <div id="roleEditor" style="display:none;margin-top:18px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;">
-      <div style="font-size:14px;font-weight:800;margin-bottom:12px;" id="roleEditorTitle">Nuevo rol</div>
-      <input type="hidden" id="editingRoleId">
-      <div class="s-fg" style="margin-bottom:10px;"><label class="s-lbl">Nombre</label><input class="si-input" id="rlName" placeholder="Moderador"></div>
-      <div class="s-fg" style="margin-bottom:10px;">
-        <label class="s-lbl">Color</label>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <input type="color" id="rlColor" value="#5e6ad2" style="width:40px;height:36px;border:1px solid var(--border);border-radius:8px;cursor:pointer;padding:2px;background:var(--bg2);">
-          ${['#5e6ad2','#e879f9','#ef4444','#f59e0b','#10b981','#3b82f6','#f97316','#a855f7','#ec4899','#00d4aa'].map(col=>
-            `<div onclick="document.getElementById('rlColor').value='${col}'"
-              style="width:24px;height:24px;border-radius:50%;background:${col};cursor:pointer;border:2px solid transparent;transition:all .15s;"
-              onmouseover="this.style.borderColor='#fff'" onmouseout="this.style.borderColor='transparent'"></div>`).join('')}
-        </div>
-      </div>
-      <div class="s-fg">
-        <label class="s-lbl">Permisos</label>
-        <div class="perm-grid" id="permGrid">
-          ${ALL_PERMS.map(p=>`
-            <div class="perm-item">
-              <span>${p.n}</span>
-              <div class="toggle" id="perm-${p.id}" onclick="this.classList.toggle('on')"></div>
-            </div>`).join('')}
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:14px;">
-        <button class="s-btn secondary" onclick="document.getElementById('roleEditor').style.display='none'">Cancelar</button>
-        <button class="s-btn primary" onclick="saveRole()">💾 Guardar rol</button>
-      </div>
-    </div>`;
-}
-
-function openRoleEditor(roleId){
-  document.getElementById('roleEditor').style.display='block';
-  document.getElementById('roleEditorTitle').textContent=roleId?'Editar rol':'Nuevo rol';
-  document.getElementById('editingRoleId').value=roleId||'';
-  document.getElementById('rlName').value='';
-  document.getElementById('rlColor').value='#5e6ad2';
-  ALL_PERMS.forEach(p=>document.getElementById('perm-'+p.id)?.classList.remove('on'));
-
-  if(roleId){
-    const srv=activeServer||serversCache[activeSrvId];
-    const role=srv?.roles?.find(r=>r.id===roleId);
-    if(role){
-      document.getElementById('rlName').value=role.name;
-      document.getElementById('rlColor').value=role.color||'#5e6ad2';
-      ALL_PERMS.forEach(p=>{
-        if(role.perms?.[p.id])document.getElementById('perm-'+p.id)?.classList.add('on');
-      });
-    }
-  }
-  document.getElementById('roleEditor').scrollIntoView({behavior:'smooth'});
-}
-
-async function saveRole(){
-  const srv=activeServer||serversCache[activeSrvId];
-  if(!srv||srv.ownerId!==ME.uid)return;
-  const name=document.getElementById('rlName').value.trim();
-  if(!name){toast('⚠','Pon un nombre al rol','');return;}
-  const color=document.getElementById('rlColor').value;
-  const perms={};
-  ALL_PERMS.forEach(p=>{if(document.getElementById('perm-'+p.id)?.classList.contains('on'))perms[p.id]=true;});
-  const roleId=document.getElementById('editingRoleId').value;
-  const {db,doc,updateDoc}=FB;
-
-  if(!srv.roles)srv.roles=[];
-  if(roleId){
-    const idx=srv.roles.findIndex(r=>r.id===roleId);
-    if(idx>=0)srv.roles[idx]={...srv.roles[idx],name,color,perms};
-  } else {
-    srv.roles.push({id:'r'+Date.now(),name,color,perms});
-  }
-  await updateDoc(doc(db,'servers',srv.id),{roles:srv.roles});
-  serversCache[srv.id]=srv;activeServer=srv;
-  toast('✅',roleId?'Rol actualizado':'Rol creado',name);
-  showPage('roles');
-}
-
-async function deleteRole(roleId){
-  const srv=activeServer||serversCache[activeSrvId];
-  if(!srv||srv.ownerId!==ME.uid)return;
-  if(!confirm('¿Eliminar este rol?'))return;
-  srv.roles=(srv.roles||[]).filter(r=>r.id!==roleId);
-  // Remove role from all members
-  if(srv.memberRoles){
-    Object.keys(srv.memberRoles).forEach(uid=>{
-      if(srv.memberRoles[uid]===roleId)delete srv.memberRoles[uid];
-    });
-  }
-  const {db,doc,updateDoc}=FB;
-  await updateDoc(doc(db,'servers',srv.id),{roles:srv.roles,memberRoles:srv.memberRoles||{}});
-  serversCache[srv.id]=srv;activeServer=srv;
-  toast('🗑','Rol eliminado','');
-  showPage('roles');
-}
-
-// ── MEMBERS-SRV PAGE ──
-async function pgMiembrosSrv(c){
-  const srv=activeServer||serversCache[activeSrvId];
-  if(!srv){c.innerHTML=`<div class="s-ttl">👥 Miembros</div><div class="s-sub" style="color:var(--warn);">Selecciona un servidor primero.</div>`;return;}
-  if(srv.ownerId!==ME.uid){c.innerHTML=`<div class="s-ttl">👥 Miembros</div><div class="s-sub">Solo el dueño puede gestionar miembros.</div>`;return;}
-
-  const {db,doc,getDoc}=FB;
-  c.innerHTML=`<div class="s-ttl">👥 Miembros — <span style="color:var(--accent)">${esc(srv.name)}</span></div>
-    <div class="s-sub">Asigna roles y gestiona quién está en el servidor.</div>
-    <div class="chp-search" style="padding:0;margin-bottom:12px;">
-      <input class="si-input" type="text" placeholder="🔍 Buscar por nombre, correo o UID..." oninput="filterMiembrosSrv(this.value)" id="srvMemberSearch">
-    </div>
-    <div id="srvMemberList"><div style="color:var(--t3);font-size:13px;">Cargando...</div></div>`;
-
-  const members=[];
-  for(const uid of srv.members||[]){
-    const snap=await getDoc(doc(db,'users',uid));
-    if(snap.exists())members.push({uid,...snap.data()});
-  }
-  window._srvMembersAll=members;
-  renderSrvMemberTable(members,srv);
-}
-
-function renderSrvMemberTable(members,srv){
-  const roles=srv.roles||[];
-  const el=document.getElementById('srvMemberList');
-  if(!el)return;
-  if(!members.length){el.innerHTML=`<div style="color:var(--t3);font-size:13px;">Sin miembros.</div>`;return;}
-  el.innerHTML=members.map(m=>{
-    const isMe=m.uid===ME.uid;
-    const memberRoleId=srv.memberRoles?.[m.uid];
-    const roleColor=roles.find(r=>r.id===memberRoleId)?.color||'transparent';
-    return`<div style="display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;margin-bottom:7px;flex-wrap:wrap;">
-      <div class="mpav ${m.avColor||'av-a'}" style="width:36px;height:36px;font-size:12px;flex-shrink:0;overflow:hidden;">
-        ${m.photoURL?`<img src="${m.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`:`${ini(m.name)}`}
-        <div class="sdot ${m.status||'offline'}" style="position:absolute;bottom:0;right:0;"></div>
-      </div>
-      <div style="flex:1;min-width:100px;">
-        <div style="font-size:13px;font-weight:700;">${esc(m.name)}${isMe?'<span style="font-size:9px;color:var(--t3);margin-left:4px;">(tú)</span>':''}</div>
-        <div style="font-size:10px;color:var(--t3);font-family:monospace;display:flex;align-items:center;gap:6px;">
-          <span style="cursor:pointer;" onclick="navigator.clipboard.writeText('${m.uid}');toast('📋','UID copiado','')" title="Copiar UID">${m.uid?.slice(0,16)}…</span>
-          <span>·</span><span>${m.email||''}</span>
-        </div>
-      </div>
-      <select class="si-sel" style="padding:5px 8px;font-size:11px;width:150px;" onchange="assignRoleToMember('${m.uid}',this.value)">
-        <option value="">Sin rol</option>
-        ${roles.map(r=>`<option value="${r.id}" ${memberRoleId===r.id?'selected':''} style="color:${r.color};">${r.name}</option>`).join('')}
-      </select>
-      ${!isMe?`<button class="s-btn danger" style="padding:5px 10px;font-size:11px;" onclick="kickMemberFromPage('${m.uid}')">👢 Expulsar</button>`:''}
-    </div>`;
-  }).join('');
-}
-
-function filterMiembrosSrv(q){
-  const srv=activeServer||serversCache[activeSrvId];
-  const all=window._srvMembersAll||[];
-  const term=(q||'').toLowerCase().trim();
-  const filtered=term?all.filter(m=>
-    (m.name||'').toLowerCase().includes(term)||
-    (m.email||'').toLowerCase().includes(term)||
-    (m.uid||'').toLowerCase().includes(term)
-  ):all;
-  renderSrvMemberTable(filtered,srv);
-}
-
-async function assignRoleToMember(uid,roleId){
-  const srv=activeServer||serversCache[activeSrvId];
-  if(!srv||srv.ownerId!==ME.uid)return;
-  if(!srv.memberRoles)srv.memberRoles={};
-  if(roleId)srv.memberRoles[uid]=roleId;
-  else delete srv.memberRoles[uid];
-  const {db,doc,updateDoc}=FB;
-  await updateDoc(doc(db,'servers',srv.id),{memberRoles:srv.memberRoles});
-  serversCache[srv.id]=srv;activeServer=srv;
-  toast('✅','Rol asignado','');
-}
-
-async function kickMemberFromPage(uid){
-  const srv=activeServer||serversCache[activeSrvId];
-  if(!srv||srv.ownerId!==ME.uid)return;
-  if(!confirm('¿Expulsar a este miembro?'))return;
-  const {db,doc,updateDoc,arrayRemove}=FB;
-  await updateDoc(doc(db,'servers',srv.id),{members:arrayRemove(uid)});
-  srv.members=(srv.members||[]).filter(id=>id!==uid);
-  serversCache[srv.id]=srv;activeServer=srv;
-  window._srvMembersAll=(window._srvMembersAll||[]).filter(m=>m.uid!==uid);
-  renderSrvMemberTable(window._srvMembersAll,srv);
-  toast('👢','Miembro expulsado','');
 }
 
 function pgSalir(c){
@@ -2413,40 +1419,9 @@ function openModal(id){document.getElementById(id).classList.add('open');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.ov').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
 
-// ── Restaurar preferencias guardadas ──
-(function restorePrefs(){
-  const accent=localStorage.getItem('lynk-accent');
-  if(accent){
-    document.documentElement.style.setProperty('--accent',accent);
-    const hexA=(h,a)=>{try{const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return`rgba(${r},${g},${b},${a})`;}catch(e){return`rgba(94,106,210,${a})`;}}
-    document.documentElement.style.setProperty('--as',hexA(accent,.13));
-    document.documentElement.style.setProperty('--ab',hexA(accent,.26));
-  }
-  const bubble=localStorage.getItem('lynk-bubble');
-  if(bubble){
-    const hexA=(h,a)=>{try{const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return`rgba(${r},${g},${b},${a})`;}catch(e){return`rgba(94,106,210,${a})`;}}
-    document.documentElement.style.setProperty('--me-bg',hexA(bubble,.15));
-    document.documentElement.style.setProperty('--me-b',hexA(bubble,.3));
-  }
-  const font=localStorage.getItem('lynk-font');
-  if(font){document.documentElement.style.setProperty('--app-font',`'${font}',sans-serif`);document.body.style.fontFamily=`'${font}',sans-serif`;}
-  const mode=localStorage.getItem('lynk-mode');
-  if(mode==='light')document.body.classList.add('light-mode');
-  else if(mode==='contrast')document.body.classList.add('high-contrast');
-  const bgColor=localStorage.getItem('lynk-bgColor');
-  if(bgColor){
-    const amt=(h,a)=>{try{let r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);r=Math.min(255,r+a);g=Math.min(255,g+a);b=Math.min(255,b+a);return`#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;}catch(e){return h;}};
-    document.documentElement.style.setProperty('--bg0',bgColor);
-    document.documentElement.style.setProperty('--bg1',amt(bgColor,8));
-    document.documentElement.style.setProperty('--bg2',amt(bgColor,16));
-  }
-  const bgImg=localStorage.getItem('lynk-bgImg');
-  if(bgImg)document.documentElement.style.setProperty('--custom-bg',`url(${bgImg})`);
-  const bigText=localStorage.getItem('acc-bigtext');
-  if(bigText==='true')document.documentElement.style.fontSize='16px';
-  const hiCon=localStorage.getItem('acc-contrast');
-  if(hiCon==='true')document.body.classList.add('high-contrast');
-})();
+// Restaurar color de acento guardado
+const savedAccent=localStorage.getItem('lynk-accent');
+if(savedAccent)document.documentElement.style.setProperty('--accent',savedAccent);
 </script>
 </body>
 </html>
